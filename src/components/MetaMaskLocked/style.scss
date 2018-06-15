@@ -1,0 +1,36 @@
+.metamask-lock-body{
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 1em;
+    padding: 3em 6.25em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 2px rgba(255, 255, 255, 0.18);
+
+    &_lock{
+        width: 3.5em;
+        margin-bottom: 3em;
+    }
+    &_header{
+        margin-top: 0;
+        margin-bottom: 0.5em;
+        font-size: 3.5em;
+        font-weight: 800;
+        color: #ffffff;
+        text-transform: uppercase;
+        text-align: center;
+    }
+    &_description{
+        margin-top: 0;
+        margin-bottom: 1.8em;
+
+        font-size: 1.5em;
+        color: #ffffff;
+        text-align: center;
+    }
+    &_text{
+        margin: 0;
+        font-size: 1.25em;
+        color: #ffffff;
+    }
+}

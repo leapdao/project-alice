@@ -12,8 +12,13 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "strictNullChecks": true
-  },
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+          "src/types/*"
+      ]
+  }},
   "exclude": [
     "node_modules",
     "build",
@@ -22,6 +27,9 @@
     "webpack",
     "jest",
     "src/setupTests.ts"
+  ],
+  "include": [
+    "./types"
   ],
   "types": [
     "typePatches"
