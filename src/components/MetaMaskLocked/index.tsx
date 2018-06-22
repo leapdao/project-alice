@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from "react";
 
-import './style.scss';
+import "./style.scss";
 
-const lock = require('./img/metamask-lock.svg');
+const lock = require("./img/metamask-lock.svg");
 
 const MetaMaskLocked = () => (
     <div className="metamask-lock-body">

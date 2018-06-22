@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from "react";
 
-import NavBar from './components/NavBar';
+import NavBar from "./components/NavBar";
 
-import './style.scss';
+import "./style.scss";
 
-const logo = require('./img/logo-white.svg');
+const logo = require("./img/logo-white.svg");
 
 export default () => (
     <header>

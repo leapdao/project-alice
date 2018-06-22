@@ -3,7 +3,10 @@
     "outDir": "build/dist",
     "module": "commonjs",
     "target": "es5",
-    "lib": ["es6", "dom"],
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "sourceMap": true,
     "allowJs": true,
     "jsx": "react",
@@ -12,13 +15,19 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "strictNullChecks": true,
+    "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
       "*": [
-          "src/types/*"
+        "src/types/*"
+      ],
+      "src/*": [
+        "src/*"
       ]
-  }},
+    }
+  },
   "exclude": [
     "node_modules",
     "build",
@@ -29,7 +38,9 @@
     "src/setupTests.ts"
   ],
   "include": [
-    "./types"
+    "./types",
+    "./node_modules/web3",
+    "./node_modules/@machinomy/types-ethereumjs-tx"
   ],
   "types": [
     "typePatches"

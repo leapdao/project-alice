@@ -1,11 +1,11 @@
-import * as React from 'react';
+import * as React from "react";
 
-const facebook = require('./img/social-facebook.svg');
-const github = require('./img/social-github.svg');
-const telegram = require('./img/social-telegram.svg');
-const twitter = require('./img/social-twitter.svg');
+const facebook = require("./img/social-facebook.svg");
+const github = require("./img/social-github.svg");
+const telegram = require("./img/social-telegram.svg");
+const twitter = require("./img/social-twitter.svg");
 
-import './style.scss';
+import "./style.scss";
 
 const NavBar = () => (
     <nav>
