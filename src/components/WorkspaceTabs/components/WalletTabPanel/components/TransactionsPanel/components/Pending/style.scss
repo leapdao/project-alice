@@ -1,0 +1,38 @@
+.tx-spinner {
+  display: flex;
+  justify-content: center;
+
+  span {
+    display: block;
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 50%;
+    margin: 0.9rem 0.2rem 0;
+
+    &:nth-child(1) {
+      background: #feb844;
+      left: 2rem;
+      animation: bounce 1s ease-in-out infinite;
+    }
+    &:nth-child(2) {
+      left: 3.6rem;
+      background: #feb844;
+      animation: bounce 1s ease-in-out 0.33s infinite;
+    }
+    &:nth-child(3) {
+      left: 3.6rem;
+      background: #feb844;
+      animation: bounce 1s ease-in-out 0.66s infinite;
+    }
+  }
+}
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1rem);
+  }
+}
