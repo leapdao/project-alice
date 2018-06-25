@@ -1,5 +1,5 @@
 import { size, map } from "lodash";
-import { Web3Window } from "../../types";
+import getWeb3 from "../getWeb3";
 import { Transaction } from "web3/types";
 
 export const TRANSACTIONS_GET_LAST_ONE = "TRANSACTIONS_GET_LAST_ONE";
@@ -9,14 +9,12 @@ export const TRANSACTIONS_GET_LAST_ONE_FAILED = "TRANSACTIONS_GET_LAST_ONE_FAILE
 export const TRANSACTIONS_GET_RECEIPT_SUCCESS = "TRANSACTIONS_GET_RECEIPT_SUCCESS";
 export const TRANSACTIONS_GET_RECEIPT_FAILED = "TRANSACTIONS_GET_RECEIPT_FAILED";
 
-const { web3 } = window as Web3Window;
-
 const getTransactions = (lastBlock, address) => new Promise((resolve, reject) => {
     const transactionsOwnFilter = (transaction) => {
         return String(transaction.from).toLowerCase() === address.toLowerCase() ||
             String(transaction.to).toLowerCase() === address.toLowerCase();
     };
-
+    const web3 = getWeb3();
     web3.eth.getBlock(lastBlock, true, (err, block) => {
         if (err) {
             reject(err);
@@ -34,6 +32,7 @@ const getTransactions = (lastBlock, address) => new Promise((resolve, reject) =>
 });
 
 const getTransactionReceipt = (hash) => new Promise((resolve, reject) => {
+    const web3 = getWeb3();
     web3.eth.getTransactionReceipt(hash, (err, receipt) => {
         if (err) {
             console.error(err.message);
@@ -43,7 +42,7 @@ const getTransactionReceipt = (hash) => new Promise((resolve, reject) => {
             resolve(receipt);
         }
     });
-})
+});
 
 export const getLastTransactions = (lastBlock, address) => (dispatch) => {
     getTransactions(lastBlock, address)

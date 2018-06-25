@@ -2,7 +2,8 @@ import * as React from "react";
 import BalancePanel from "./components/BalancePanel";
 import { TransactionsPanel } from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
-import * as Web3 from "web3";
+import { Signature } from "web3/types";
+import getWeb3 from "../../../../getWeb3";
 import {
     ALICE_PUBLIC_ADDRESS,
     ALICE_PRIVATE_KEY,
@@ -30,23 +31,22 @@ import "./style.scss";
 import { observer, inject } from "mobx-react";
 import { WalletTabPanelProps } from "./types";
 
-const web3 = new (Web3 as any)("https://rinkeby.infura.io");
-
 export default class WalletTabPanel extends React.Component<any> {
     static defaultProps = {
         store: {}
     };
 
     handleSendTransaction = (to: string, value: number) => {
+        const web3 = getWeb3();
         web3.eth.accounts.signTransaction({
             to,
             value,
             gas: 21000,
-        }, this.props.store.privKey, (err, { rawTransaction }) => {
+        }, this.props.store.privKey, ((err, { rawTransaction }) => {
             web3.eth.sendSignedTransaction(rawTransaction, (err2, txHash) => {
                 console.log(err2, txHash);
             });
-        });
+        }));
     }
 
     render() {

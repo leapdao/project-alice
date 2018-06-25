@@ -1,17 +1,15 @@
 import { observable, action, toJS } from "mobx";
 import Transaction from "./Transaction";
-import { Web3Window } from "../../types";
+import getWeb3 from "../getWeb3";
 import { size, findIndex, map, assign } from "lodash";
 import BigNumber from "bignumber.js";
-
-const { web3 } = window as Web3Window;
 
 const getTransactions = (address: string, lastBlock: number = 0) => new Promise((resolve, reject) => {
     const transactionsOwnFilter = (transaction) => {
         return String(transaction.from).toLowerCase() === address.toLowerCase() ||
             String(transaction.to).toLowerCase() === address.toLowerCase();
     };
-
+    const web3 = getWeb3();
     web3.eth.getBlock(lastBlock, true, (err, block) => {
         if (err) {
             reject(err);
@@ -28,6 +26,7 @@ const getTransactions = (address: string, lastBlock: number = 0) => new Promise(
 });
 
 const getBalance = (address): Promise<BigNumber> => new Promise((resolve, reject) => {
+    const web3 = getWeb3();
     web3.eth.getBalance(address, (err: Error, balance: BigNumber) => {
         if (err) {
             reject(err);

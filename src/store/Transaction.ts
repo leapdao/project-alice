@@ -1,9 +1,7 @@
 import { observable, action } from "mobx";
 import { assign } from "lodash";
 import { TransactionReceipt } from "web3/types";
-import { Web3Window } from "../../types";
-
-const { web3 } = window as Web3Window;
+import getWeb3 from "../getWeb3";
 
 export default class Transaction {
     transactionHash: string;
@@ -29,6 +27,7 @@ export default class Transaction {
 
     @action
     loadReceipt = (hash: string) => {
+        const web3 = getWeb3();
         web3.eth.getTransactionReceipt(hash, (err, receipt) => {
             if (err) {
                 console.error(err.message);
