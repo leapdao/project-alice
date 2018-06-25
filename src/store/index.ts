@@ -41,10 +41,13 @@ class Store {
     @observable transactions = [];
     @observable lastBlock: number;
     @observable address: string;
+    @observable privKey: string;
     @observable balance: number;
 
-    constructor(address: string) {
+    // ToDo: pass privKey only. Address can be derrived from private key
+    constructor(address: string, privKey: string) {
         this.address = address;
+        this.privKey = privKey;
 
         try {
             const initialStore = JSON.parse(localStorage.getItem(`psc_store_${this.address.substr(2, 6)}`));
@@ -54,7 +57,7 @@ class Store {
                     lastBlock: initialStore.lastBlock,
                     balance: initialStore.balance
             });
-                
+
                 if (initialStore.transactions) {
                     assign(this, {
                         transactions: initialStore.transactions.map((transaction) => {
@@ -108,7 +111,7 @@ class Store {
                 lastBlock = 0;
             }
             const transactions = await getTransactions(address, lastBlock);
-                
+
             if (size(transactions) > 0) {
                 map(transactions, this.add.bind(this));
             }

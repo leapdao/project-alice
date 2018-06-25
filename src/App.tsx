@@ -14,13 +14,16 @@ import Store from "./store";
 import {
   ALICE_PUBLIC_ADDRESS,
   BOB_PUBLIC_ADDRESS,
-  CHARLIE_PUBLIC_ADDRESS
+  CHARLIE_PUBLIC_ADDRESS,
+  ALICE_PRIVATE_KEY,
+  BOB_PRIVATE_KEY,
+  CHARLIE_PRIVATE_KEY,
 } from "./config";
 
 const store = {
-  alice: new Store(ALICE_PUBLIC_ADDRESS),
-  bob: new Store(BOB_PUBLIC_ADDRESS),
-  charlie: new Store(CHARLIE_PUBLIC_ADDRESS)
+  alice: new Store(ALICE_PUBLIC_ADDRESS, ALICE_PRIVATE_KEY),
+  bob: new Store(BOB_PUBLIC_ADDRESS, BOB_PRIVATE_KEY),
+  charlie: new Store(CHARLIE_PUBLIC_ADDRESS, CHARLIE_PRIVATE_KEY)
 };
 
 export default () => (

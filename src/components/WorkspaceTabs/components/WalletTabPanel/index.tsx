@@ -2,9 +2,7 @@ import * as React from "react";
 import BalancePanel from "./components/BalancePanel";
 import { TransactionsPanel } from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
-import { Web3Window } from "../../../../../types";
-import Tx from "ethereumjs-tx";
-import { assign } from "lodash";
+import * as Web3 from "web3";
 import {
     ALICE_PUBLIC_ADDRESS,
     ALICE_PRIVATE_KEY,
@@ -32,7 +30,7 @@ import "./style.scss";
 import { observer, inject } from "mobx-react";
 import { WalletTabPanelProps } from "./types";
 
-const { web3 } = window as Web3Window;
+const web3 = new (Web3 as any)("https://rinkeby.infura.io");
 
 export default class WalletTabPanel extends React.Component<any> {
     static defaultProps = {
@@ -40,9 +38,15 @@ export default class WalletTabPanel extends React.Component<any> {
     };
 
     handleSendTransaction = (to: string, value: number) => {
-       console.log("from", this.props.store.address);
-       console.log("to", to);
-       console.log("value", value);
+        web3.eth.accounts.signTransaction({
+            to,
+            value,
+            gas: 21000,
+        }, this.props.store.privKey, (err, { rawTransaction }) => {
+            web3.eth.sendSignedTransaction(rawTransaction, (err2, txHash) => {
+                console.log(err2, txHash);
+            });
+        });
     }
 
     render() {
