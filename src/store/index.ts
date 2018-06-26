@@ -1,4 +1,4 @@
-import { observable, action, toJS } from "mobx";
+import { observable, action, toJS, reaction } from "mobx";
 import Transaction from "./Transaction";
 import getWeb3 from "../getWeb3";
 import { size, findIndex, map, assign } from "lodash";
@@ -115,6 +115,7 @@ class Store {
 
             if (size(transactions) > 0) {
                 map(transactions, this.add.bind(this));
+                this.getBalance(address);
             }
             this.fromBlock = blockNumber;
 
