@@ -5,6 +5,10 @@ export interface InputPanelProps {
 
 export interface InputPanelState {
     amount: string | "";
+    receiver: null | {
+        name: String;
+        account: String;
+    };
 }
 
 export interface SelectAddressOption {

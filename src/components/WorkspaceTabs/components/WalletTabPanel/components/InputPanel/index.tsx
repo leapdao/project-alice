@@ -48,7 +48,7 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
 const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
 
 class InputPanel extends React.PureComponent<any, InputPanelState> {
-    state = {
+    state: InputPanelState = {
         receiver: null,
         amount: undefined
     };
@@ -57,10 +57,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
         event.preventDefault();
         event.stopPropagation();
 
-        this.setState((state) => ({
-            ...state,
-            receiver
-        }));
+        this.setState({ receiver });
     }
 
     valueRenderer = (receiver) => (
@@ -106,7 +103,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     handleSendTransaction = () => {
         const { amount } = this.state;
         const { balance } = (this.props as any);
-        if (amount) {
+        if (amount && this.state.receiver) {
             this.props.onSend(
                 this.state.receiver.account,
                 BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
