@@ -55,6 +55,8 @@ const getStatusClassName = (status: string | true) => {
   }
 };
 
+const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
+
 const TxTr = observer(({tx}) => {
   return (
     <tr className={`tx-tr ${getStatusClassName(tx.status)}`}>
@@ -64,10 +66,10 @@ const TxTr = observer(({tx}) => {
       <td className="tx-td tx-td_to">
         <a className="alice-transactions-list_item-to" href={`#${tx.to}`} target="_blank">{tx.to}</a>
       </td>
-      <td className="tx-td">{new BigNumber(tx.value).toNumber()}</td>
+      <td className="tx-td">{new BigNumber(tx.value).div(decimals).toNumber()}</td>
       <td className="tx-td">{tx.gas}</td>
-      <td className="tx-td">{new BigNumber(tx.gasPrice).toNumber()}</td>
-      <td className="tx-td">{new BigNumber(tx.gasPrice).toNumber() * tx.gas}</td>
+      <td className="tx-td">{new BigNumber(tx.gasPrice).div(decimals).toNumber()}</td>
+      <td className="tx-td">{new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber()}</td>
       <td className="tx-td"><TxStatus tx={tx} /></td>
     </tr>
   );
