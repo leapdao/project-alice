@@ -35,41 +35,45 @@ class TxStatus extends React.Component<any> {
 
   render() {
     switch (this.props.tx.status) {
+      case true:
       case "0x01":
         return <Checkmark animation={this.state.animation}/>;
       case "0x00":
         return <Cross animation={this.state.animation}/>;
-      default: 
+      default:
         return <Pending />;
     }
   }
 }
 
-const getStatusClassName = (status: string) => {
+const getStatusClassName = (status: string | true) => {
   switch (status) {
     case "0x01": return "success";
+    case true: return "success";
     case "0x00": return "failed";
     default: return "pending";
   }
 };
 
-const TxTr = observer(({tx}) => (
-  <tr className={`tx-tr ${getStatusClassName(tx.status)}`}>
-    <td className="tx-td tx-td_from">
-      <a className="alice-transactions-list_item-from" href={`#${tx.from}`} target="_blank">{tx.from}</a>
-    </td>
-    <td className="tx-td tx-td_to">
-      <a className="alice-transactions-list_item-to" href={`#${tx.to}`} target="_blank">{tx.to}</a>
-    </td>
-    <td className="tx-td">{new BigNumber(tx.value).toNumber()}</td>
-    <td className="tx-td">{tx.gas}</td>
-    <td className="tx-td">{new BigNumber(tx.gasPrice).toNumber()}</td>
-    <td className="tx-td">{new BigNumber(tx.gasPrice).toNumber() * tx.gas}</td>
-    <td className="tx-td"><TxStatus tx={tx} /></td>
-  </tr>
-));
+const TxTr = observer(({tx}) => {
+  return (
+    <tr className={`tx-tr ${getStatusClassName(tx.status)}`}>
+      <td className="tx-td tx-td_from">
+        <a className="alice-transactions-list_item-from" href={`#${tx.from}`} target="_blank">{tx.from}</a>
+      </td>
+      <td className="tx-td tx-td_to">
+        <a className="alice-transactions-list_item-to" href={`#${tx.to}`} target="_blank">{tx.to}</a>
+      </td>
+      <td className="tx-td">{new BigNumber(tx.value).toNumber()}</td>
+      <td className="tx-td">{tx.gas}</td>
+      <td className="tx-td">{new BigNumber(tx.gasPrice).toNumber()}</td>
+      <td className="tx-td">{new BigNumber(tx.gasPrice).toNumber() * tx.gas}</td>
+      <td className="tx-td"><TxStatus tx={tx} /></td>
+    </tr>
+  );
+});
 
-export const TransactionsPanel = (props: any) => (
+export const TransactionsPanel = observer((props: any) => (
   <div className="alice-transactions-panel">
     <h4 className="alice-transactions-panel_header">Tx History:</h4>
     <table className="tx-table">
@@ -93,4 +97,4 @@ export const TransactionsPanel = (props: any) => (
       </tbody>
     </table>
   </div>
-);
+));

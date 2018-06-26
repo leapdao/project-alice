@@ -5,7 +5,7 @@ import getWeb3 from "../getWeb3";
 
 export default class Transaction {
     transactionHash: string;
-    @observable status: string;
+    @observable status: string | true;
     @observable transactionIndex: number;
     @observable blockHash: string;
     @observable blockNumber: number;
