@@ -1,4 +1,5 @@
 import * as React from "react";
+import BigNumber from "bignumber.js";
 import Select, { OptionComponentProps, OptionValues } from "react-select";
 
 import SendButton from "./components/SendButton";
@@ -38,11 +39,13 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
                 className="select-address-option"
                 onMouseDown={this.handleMouseDown}
             >
-            {option.name}
+                {option.name}
             </div>
         );
     }
 }
+
+const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
 
 class InputPanel extends React.PureComponent<any, InputPanelState> {
     state = {
@@ -72,25 +75,43 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     )
 
     handleChangeAmount = (e: React.FormEvent<HTMLInputElement>) => {
-        const {value} = e.currentTarget;
+        const { value } = e.currentTarget;
 
-        const amount = parseInt(value, 10);
-        this.setState((state) => ({
-            ...state,
-            amount: isNaN(amount) ? value === "" ? value : state.amount : amount,
-        }));
+        this.setState({
+            amount: value,
+        });
+    }
+
+    handleBlur = (e: React.FormEvent<HTMLInputElement>) => {
+        const balance = Number(new BigNumber((this.props as any).balance).div(decimals).toPrecision(2));
+        this.setState(state => {
+            const amount = Number(state.amount);
+            if (isNaN(amount) || !amount || amount < 0) {
+                return { amount: "" };
+            }
+
+            return {
+                amount: String(Math.min(balance, amount))
+            };
+        });
     }
 
     handleSetMaxAmount = () => {
         const { balance } = (this.props as any);
-        this.setState((state) => ({
-            ...state,
-            amount: balance,
-        }));
+        this.setState({
+            amount: new BigNumber(balance).div(decimals).toPrecision(2),
+        });
     }
 
     handleSendTransaction = () => {
-        this.props.onSend(this.state.receiver.account, this.state.amount);
+        const { amount } = this.state;
+        const { balance } = (this.props as any);
+        if (amount) {
+            this.props.onSend(
+                this.state.receiver.account,
+                BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
+            );
+        }
     }
 
     render() {
@@ -121,6 +142,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                         placeholder="Send amount"
                         value={this.state.amount}
                         onChange={this.handleChangeAmount}
+                        onBlur={this.handleBlur}
                     />
                     <button className="alice-input-panel_amount-max" onClick={this.handleSetMaxAmount}>max</button>
                 </label>

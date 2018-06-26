@@ -4,7 +4,7 @@ export interface InputPanelProps {
 }
 
 export interface InputPanelState {
-    amount: number | "";    
+    amount: string | "";
 }
 
 export interface SelectAddressOption {

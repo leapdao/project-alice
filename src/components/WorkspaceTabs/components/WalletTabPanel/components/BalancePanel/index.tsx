@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as copytoclipboard from "copy-to-clipboard";
+import BigNumber from "bignumber.js";
 const QRCode = require("qrcode");
 
 const copy = require("./img/copy.svg");
@@ -37,13 +38,16 @@ class BalancePanel extends React.Component<any> {
     }
 
     render() {
+        const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
+        const balance = new BigNumber(this.props.balance).div(decimals).toPrecision(2);
+        const symbol = "ETH"; // ToDo: fetch value from token contract for plasma chain
         return (
             <div className="alice-balance-panel">
                     <canvas  className="alice-balance-panel_qr" ref={this.qrcode} />
                 <div className="flex-column flex-one">
                     <div className="alice-balance-panel_balance">
                         <img src={psc} className="alice-balance-panel_balance-icon" />
-                        <span>Balance: <strong>{this.props.balance} PSC</strong></span>
+                        <span>Balance: <strong>{balance} {symbol}</strong></span>
                     </div>
                     <div className="alice-balance-panel_address">
                         <span>Address: <strong className="white">{this.props.address}</strong></span>
