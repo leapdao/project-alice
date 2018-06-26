@@ -50,7 +50,8 @@ const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token cont
 class InputPanel extends React.PureComponent<any, InputPanelState> {
     state: InputPanelState = {
         receiver: null,
-        amount: undefined
+        amount: undefined,
+        sending: false,
     };
 
     handleSelectAddress = (receiver) => {
@@ -104,13 +105,15 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
         const { amount } = this.state;
         const { balance } = (this.props as any);
         if (amount && this.state.receiver) {
-            console.log('preSend');
-            await this.props.onSend(
-                this.state.receiver.account,
-                BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
-            );
-            console.log('postSend');
-            this.setState({ amount: undefined, receiver: null });
+            this.setState({ sending: true });
+            try {
+                await this.props.onSend(
+                    this.state.receiver.account,
+                    BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
+                );
+            } finally {
+                this.setState({ amount: undefined, receiver: null, sending: false });
+            }
         }
     }
 
@@ -144,10 +147,18 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                         onChange={this.handleChangeAmount}
                         onBlur={this.handleBlur}
                     />
-                    <button className="alice-input-panel_amount-max" onClick={this.handleSetMaxAmount}>max</button>
+                    <button
+                        className="alice-input-panel_amount-max"
+                        onClick={this.handleSetMaxAmount}
+                    >
+                        max
+                    </button>
                 </label>
 
-                <SendButton onClick={this.handleSendTransaction}/>
+                <SendButton
+                    disabled={this.state.sending}
+                    onClick={this.handleSendTransaction}
+                />
             </div>
         );
     }

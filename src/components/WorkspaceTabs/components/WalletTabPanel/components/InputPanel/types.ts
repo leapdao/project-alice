@@ -9,6 +9,7 @@ export interface InputPanelState {
         name: String;
         account: String;
     };
+    sending: boolean;
 }
 
 export interface SelectAddressOption {
