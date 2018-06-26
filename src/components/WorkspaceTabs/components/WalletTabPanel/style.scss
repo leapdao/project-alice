@@ -7,7 +7,7 @@
         padding: 3em 6em;
         display: -ms-flexbox;
     }
-    
+
     &-input-panel{
         display: flex;
 
@@ -56,7 +56,7 @@
                     .Select-input{
                         outline: none;
                     }
-                    
+
                 }
 
                 .Select-menu{
@@ -82,47 +82,56 @@
         }
 
         &_amount{
-            display: flex;
-            flex: 1 1;
-            font-size: 1.25em;
-            margin-right: 1.5em;
             border: solid 0.1em rgba(255, 255, 255, 0.35);
             border-radius: 0.8em;
             height: 3.5em;
             align-items: center;
-            padding: 0 1.5em;
+            padding: 0 4em 0 1.5em;
+            background: none;
+            font-size: 1em;
+            outline: none;
+            color: #FFFFFF;
+            width: 100%;
+            box-sizing: border-box;
 
-            &-text{
-                background: none;
-                border: none;
-                font-size: 1em;
-                outline: none;
-                color: #FFFFFF;
+            &:focus {
+                border-color: rgba(255, 255, 255, 0.6);
+            }
+
+            &-wrapper {
                 flex: 1 1;
+                font-size: 1.25em;
+                margin-right: 1.5em;
+
+                position: relative;
             }
-            
-            &-text::-webkit-input-placeholder{
+
+            &::-webkit-input-placeholder{
                 color: #FFFFFF;
             }
-            &-text:-moz-placeholder{
+            &:-moz-placeholder{
                 color: #FFFFFF;
             }
-            &-text::-moz-placeholder{
+            &::-moz-placeholder{
                 color: #FFFFFF;
             }
-            &-text:-ms-input-placeholder{
+            &:-ms-input-placeholder{
                 color: #FFFFFF;
             }
-            &-text::-ms-input-placeholder{
+            &::-ms-input-placeholder{
                 color: #FFFFFF;
             }
 
-            &-text::placeholder{
+            &::placeholder{
                 color: #FFFFFF;
                 opacity: 1;
             }
 
             &-max{
+                position: absolute;
+                right: 1.5em;
+                top: 50%;
+                transform: translateY(-50%);
                 color: #44b6fe;
                 background: none;
                 border: none;
@@ -143,7 +152,7 @@
                 border: none;
                 border-radius: 15px;
                 background-image: linear-gradient(to right, #4facfe, #00f2fe);
-    
+
                 font-size: 1.3em;
                 font-weight: 800;
                 color: #101c3c;
@@ -163,7 +172,7 @@
         border: none;
         height: 2px;
         opacity: 0.18;
-        background-color: #ffffff;    
+        background-color: #ffffff;
     }
 
 }

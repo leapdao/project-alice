@@ -30,7 +30,7 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
         event.stopPropagation();
         this.props.onSelect(this.props.option, event);
     }
-    
+
     render() {
         const {option} = this.props;
         return (
@@ -53,7 +53,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     handleSelectAddress = (receiver) => {
         event.preventDefault();
         event.stopPropagation();
-        
+
         this.setState((state) => ({
             ...state,
             receiver
@@ -65,15 +65,15 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     )
 
     arrowRenderer = ({isOpen}) => (
-        <img 
-            className={`alice-input-panel_address-dropdown${isOpen ? " opened" : ""}`} 
+        <img
+            className={`alice-input-panel_address-dropdown${isOpen ? " opened" : ""}`}
             src={isOpen ? dropdownWhite : dropdown}
         />
     )
 
     handleChangeAmount = (e: React.FormEvent<HTMLInputElement>) => {
         const {value} = e.currentTarget;
-        
+
         const amount = parseInt(value, 10);
         this.setState((state) => ({
             ...state,
@@ -114,16 +114,16 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                     />
                 </div>
 
-                <div className="alice-input-panel_amount">
+                <label className="alice-input-panel_amount-wrapper">
                     <input
-                        className="alice-input-panel_amount-text"
+                        className="alice-input-panel_amount"
                         type="text"
                         placeholder="Send amount"
                         value={this.state.amount}
                         onChange={this.handleChangeAmount}
                     />
                     <button className="alice-input-panel_amount-max" onClick={this.handleSetMaxAmount}>max</button>
-                </div>
+                </label>
 
                 <SendButton onClick={this.handleSendTransaction}/>
             </div>
