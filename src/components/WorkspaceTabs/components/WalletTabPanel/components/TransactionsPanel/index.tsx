@@ -11,9 +11,6 @@ import { stat } from "fs";
 import Cross from "./components/Cross";
 
 const getStatus = (original) => {
-  if (original.blockNumber) {
-    return "success";
-  }
 
   switch (original.status) {
     case true:
@@ -22,7 +19,7 @@ const getStatus = (original) => {
     case "0x0":
       return "failed";
     default:
-      return "pending";
+      return original.blockNumber ? "success" : "pending";
   }
 };
 const txOrderBy = ({ createdAt }) => new Date(createdAt).getTime();
@@ -43,11 +40,10 @@ class TxStatus extends React.Component<any> {
     if (this.props.tx.blockNumber) {
       return <Checkmark animation={this.state.animation}/>;
     }
-    switch (this.props.tx.status) {
-      case true:
-      case "0x01":
+    switch (getStatus(this.props.tx)) {
+      case "success":
         return <Checkmark animation={this.state.animation}/>;
-      case "0x00":
+      case "failed":
         return <Cross animation={this.state.animation}/>;
       default:
         return <Pending />;
@@ -56,14 +52,7 @@ class TxStatus extends React.Component<any> {
 }
 
 const getStatusClassName = (tx) => {
-  if (tx.blockNumber) {
-    return "success";
-  }
-  switch (tx.status) {
-    case "0x01": case true: return "success";
-    case "0x00": return "failed";
-    default: return "pending";
-  }
+  return getStatus(tx);
 };
 
 const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
