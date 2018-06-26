@@ -5,7 +5,7 @@ import getWeb3 from "../getWeb3";
 
 export default class Transaction {
     transactionHash: string;
-    @observable status: string | true;
+    @observable status: string | boolean;
     @observable transactionIndex: number;
     @observable blockHash: string;
     @observable blockNumber: number;
@@ -31,7 +31,7 @@ export default class Transaction {
         web3.eth.getTransactionReceipt(hash, (err, receipt) => {
             if (err) {
                 console.error(err.message);
-            } else {
+            } else if (receipt) {
                 this.update({
                     status: receipt.status
                 });

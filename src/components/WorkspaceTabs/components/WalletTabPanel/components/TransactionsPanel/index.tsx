@@ -11,7 +11,12 @@ import { stat } from "fs";
 import Cross from "./components/Cross";
 
 const getStatus = (original) => {
+  if (original.blockNumber) {
+    return "success";
+  }
+
   switch (original.status) {
+    case true:
     case "0x1":
       return "success";
     case "0x0":
@@ -22,6 +27,7 @@ const getStatus = (original) => {
 };
 const txOrderBy = ({ createdAt }) => new Date(createdAt).getTime();
 
+@observer
 class TxStatus extends React.Component<any> {
   state = {
     animation: false
@@ -34,6 +40,9 @@ class TxStatus extends React.Component<any> {
   }
 
   render() {
+    if (this.props.tx.blockNumber) {
+      return <Checkmark animation={this.state.animation}/>;
+    }
     switch (this.props.tx.status) {
       case true:
       case "0x01":
@@ -46,10 +55,12 @@ class TxStatus extends React.Component<any> {
   }
 }
 
-const getStatusClassName = (status: string | true) => {
-  switch (status) {
-    case "0x01": return "success";
-    case true: return "success";
+const getStatusClassName = (tx) => {
+  if (tx.blockNumber) {
+    return "success";
+  }
+  switch (tx.status) {
+    case "0x01": case true: return "success";
     case "0x00": return "failed";
     default: return "pending";
   }
@@ -59,7 +70,7 @@ const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token cont
 
 const TxTr = observer(({tx}) => {
   return (
-    <tr className={`tx-tr ${getStatusClassName(tx.status)}`}>
+    <tr className={`tx-tr ${getStatusClassName(tx)}`}>
       <td className="tx-td tx-td_from">
         <a className="alice-transactions-list_item-from" href={`#${tx.from}`} target="_blank">{tx.from}</a>
       </td>
@@ -68,8 +79,8 @@ const TxTr = observer(({tx}) => {
       </td>
       <td className="tx-td">{new BigNumber(tx.value).div(decimals).toNumber()}</td>
       <td className="tx-td">{tx.gas}</td>
-      <td className="tx-td">{new BigNumber(tx.gasPrice).div(decimals).toNumber()}</td>
-      <td className="tx-td">{new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber()}</td>
+      <td className="tx-td">{tx.gasPrice && new BigNumber(tx.gasPrice).div(decimals).toNumber()}</td>
+      <td className="tx-td">{tx.gasPrice && new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber()}</td>
       <td className="tx-td"><TxStatus tx={tx} /></td>
     </tr>
   );
@@ -91,8 +102,16 @@ export const TransactionsPanel = observer((props: any) => (
         </tr>
       </thead>
       <tbody className="tx-tbody">
-        {
-          props.transactions.map((tx) => (
+        {props.transactions
+          .filter(tx => getStatus(tx) === "pending")
+          .map((tx) => (
+            <TxTr tx={tx} key={tx.transactionHash}/>
+          ))
+        }
+        {props.transactions
+          .filter(tx => getStatus(tx) !== "pending")
+          .sort((a, b) => b.blockNumber - a.blockNumber)
+          .map((tx) => (
             <TxTr tx={tx} key={tx.transactionHash}/>
           ))
         }

@@ -100,14 +100,17 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
         });
     }
 
-    handleSendTransaction = () => {
+    handleSendTransaction = async () => {
         const { amount } = this.state;
         const { balance } = (this.props as any);
         if (amount && this.state.receiver) {
-            this.props.onSend(
+            console.log('preSend');
+            await this.props.onSend(
                 this.state.receiver.account,
                 BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
             );
+            console.log('postSend');
+            this.setState({ amount: undefined, receiver: null });
         }
     }
 
@@ -137,7 +140,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                         className="alice-input-panel_amount"
                         type="text"
                         placeholder="Send amount"
-                        value={this.state.amount}
+                        value={this.state.amount || ""}
                         onChange={this.handleChangeAmount}
                         onBlur={this.handleBlur}
                     />

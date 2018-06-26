@@ -36,17 +36,35 @@ export default class WalletTabPanel extends React.Component<any> {
         store: {}
     };
 
-    handleSendTransaction = (to: string, value: number) => {
+    handleSendTransaction = async (to: string, value: number) => {
         const web3 = getWeb3();
-        web3.eth.accounts.signTransaction({
+        const gasPrice = await web3.eth.getGasPrice();
+        const { rawTransaction } = await web3.eth.accounts.signTransaction({
             to,
             value,
             gas: 21000,
-        }, this.props.store.privKey, ((err, { rawTransaction }) => {
-            web3.eth.sendSignedTransaction(rawTransaction, (err2, txHash) => {
-                console.log(err2, txHash);
+            gasPrice,
+        }, this.props.store.privKey);
+        const hash = await new Promise((resolve, reject) => {
+            web3.eth.sendSignedTransaction(rawTransaction, (err, txHash) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    this.props.store.add({
+                        from: this.props.store.address,
+                        to,
+                        value,
+                        gas: 21000,
+                        gasPrice,
+                        hash: txHash,
+                        status: false,
+                    });
+                    resolve(txHash);
+                }
             });
-        }));
+        });
+
+        return hash;
     }
 
     render() {
