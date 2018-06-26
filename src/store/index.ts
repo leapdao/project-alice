@@ -4,26 +4,26 @@ import getWeb3 from "../getWeb3";
 import { size, findIndex, map, assign } from "lodash";
 import BigNumber from "bignumber.js";
 
-const getTransactions = (address: string, lastBlock: number = 0) => new Promise((resolve, reject) => {
-    const transactionsOwnFilter = (transaction) => {
+const range = (from: number, to: number) => Array.from(new Array(to - from), (_, i) => i + from);
+
+const getTransactions = async (address: string, fromBlock: number, toBlock: number) => {
+    if (fromBlock === toBlock) {
+        return [];
+    }
+
+    const txOwnFilter = (transaction) => {
         return String(transaction.from).toLowerCase() === address.toLowerCase() ||
             String(transaction.to).toLowerCase() === address.toLowerCase();
     };
     const web3 = getWeb3();
-    web3.eth.getBlock(lastBlock, true, (err, block) => {
-        if (err) {
-            reject(err);
-        } else {
-            if (block !== null && block.transactions !== null) {
-                const transactions = block.transactions
-                    .filter(transactionsOwnFilter);
-                    resolve(transactions);
-            } else {
-                reject(new Error("Block is null"));
-            }
-        }
-    });
-});
+    const blocks = await Promise.all(range(fromBlock, toBlock + 1).map(i => web3.eth.getBlock(i, true)));
+    const transactions = (
+        blocks
+            .filter(b => b && b.transactions)
+            .reduce((txs, block) => txs.concat(block.transactions.filter(txOwnFilter)), [])
+    );
+    return transactions;
+};
 
 const getBalance = (address): Promise<BigNumber> => new Promise((resolve, reject) => {
     const web3 = getWeb3();
@@ -38,7 +38,7 @@ const getBalance = (address): Promise<BigNumber> => new Promise((resolve, reject
 
 class Store {
     @observable transactions = [];
-    @observable lastBlock: number;
+    @observable fromBlock: number;
     @observable address: string;
     @observable privKey: string;
     @observable balance: number;
@@ -53,9 +53,9 @@ class Store {
 
             if (initialStore) {
                 assign(this, {
-                    lastBlock: initialStore.lastBlock,
+                    fromBlock: initialStore.fromBlock,
                     balance: initialStore.balance
-            });
+                });
 
                 if (initialStore.transactions) {
                     assign(this, {
@@ -68,7 +68,7 @@ class Store {
 
             this.getBalance(address);
 
-            this.load(address, this.lastBlock);
+            this.load(address, this.fromBlock);
 
         } catch (error) {
             console.error(error.message);
@@ -103,24 +103,27 @@ class Store {
     }
 
     @action
-    load = async (address: string, lastBlock: number = 0) => {
-        try {
+    load = async (address: string, fromBlock: number) => {
+        const web3 = getWeb3();
+        // start from 0 for plasma chain
+        // start from blockNumber - n for ethereum
+        const blockNumber = await web3.eth.getBlockNumber();
+        fromBlock = fromBlock || (blockNumber - 100);
 
-            if (typeof lastBlock === "undefined") {
-                lastBlock = 0;
-            }
-            const transactions = await getTransactions(address, lastBlock);
+        try {
+            const transactions = await getTransactions(address, fromBlock, blockNumber);
 
             if (size(transactions) > 0) {
                 map(transactions, this.add.bind(this));
             }
-            lastBlock++;
-            this.lastBlock = lastBlock;
+            this.fromBlock = blockNumber;
 
-            this.load(address, lastBlock);
+            setTimeout(() => {
+                this.load(address, blockNumber);
+            }, 5000);
         } catch (error) {
             setTimeout(() => {
-                this.load(address, lastBlock);
+                this.load(address, fromBlock);
             }, 5000);
         }
     }
@@ -128,7 +131,7 @@ class Store {
     save = () => {
         localStorage.setItem(`psc_store_${this.address.substr(2, 6)}`, JSON.stringify({
             transactions: toJS(this.transactions),
-            lastBlock: this.lastBlock,
+            fromBlock: this.fromBlock,
             balance: this.balance
         }));
     }
