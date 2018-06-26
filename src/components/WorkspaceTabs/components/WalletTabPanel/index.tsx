@@ -1,6 +1,6 @@
 import * as React from "react";
 import BalancePanel from "./components/BalancePanel";
-import { TransactionsPanel } from "./components/TransactionsPanel";
+import TransactionsPanel from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
 import getWeb3 from "../../../../getWeb3";
 import {

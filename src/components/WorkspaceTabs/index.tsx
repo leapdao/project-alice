@@ -20,7 +20,8 @@ const CharlieWalletTabPanel = createWalletTabPanel("charlie");
 
 class WalletTab extends React.Component<any> {
     state = {
-        pulsar: false
+        pulsar: false,
+        notifications: 0
     };
 
     static getDerivedStateFromProps = (props, state) => {
@@ -29,18 +30,20 @@ class WalletTab extends React.Component<any> {
             props.active === true
         ) {
             state.pulsar = false;
+            state.notifications = props.store.notifications;
+
+        } else if (
+            props.active === false &&
+            props.store.notifications !== state.notifications
+        ) {
+            state.pulsar = true;
+        } else if (
+            props.active === true
+        ) {
+            state.notifications = props.store.notifications;
         }
 
         return state;
-    }
-
-    get(props: any, state: any) {
-        if (
-            this.props.active === false &&
-            this.props.store.transactions.length !== props.store.transactions.length
-        ) {
-            this.state.pulsar = true;
-        }
     }
 
     render() {
@@ -48,31 +51,26 @@ class WalletTab extends React.Component<any> {
             <div className="tab">
                 <img className="react-tabs__tab-icon" src={this.props.icon} />
                 <span className="react-tabs__tab-label">{this.props.name}</span>
-                {
-                    this.state.pulsar && <PulsaitingDot />
-                }
+                {this.state.pulsar ? <PulsaitingDot/> : null}
+                <input type="hidden" value={this.props.store.notifications}/>
             </div>
         );
     }
 }
 
-const createWalletTab = (wallet: string) => inject((store: any) => ({
-    store: store[wallet],
-}))(observer(WalletTab));
+const AliceWalletTab = inject((store: any) => ({ store: store.alice }))(observer(WalletTab));
+const BobWalletTab = inject((store: any) => ({ store: store.bob }))(observer(WalletTab));
+const CharlieWalletTab = inject((store: any) => ({ store: store.charlie }))(observer(WalletTab));
 
-const AliceWalletTab = createWalletTab("alice");
-const BobWalletTab = createWalletTab("bob");
-const CharlieWalletTab = createWalletTab("charlie");
-
-export default class WorkspaceTabs extends React.Component {
+class WorkspaceTabs extends React.Component<any> {
     state = {
         active: 0
     };
 
     handleSelect = (active) => {
-        this.setState({
+        this.setState((state) => ({
             active
-        });
+        }));
     }
 
     render() {
@@ -80,13 +78,13 @@ export default class WorkspaceTabs extends React.Component {
             <Tabs onSelect={this.handleSelect}>
                 <TabList>
                     <Tab>
-                        <AliceWalletTab name="Alice" icon={alice} active={this.state.active === 0}/>
+                        <AliceWalletTab name="Alice" icon={alice} active={this.state.active === 0} />
                     </Tab>
                     <Tab>
-                        <BobWalletTab name="Bob" icon={bob} active={this.state.active === 1}/>
+                        <BobWalletTab name="Bob" icon={alice} active={this.state.active === 1} />
                     </Tab>
                     <Tab>
-                        <CharlieWalletTab name="Charlie" icon={charlie} active={this.state.active === 2}/>
+                        <CharlieWalletTab name="Charlie" icon={alice} active={this.state.active === 2} />
                     </Tab>
                     <Tab className="react-tabs__tab flex-right">
                         <div className="tab tab-help">
@@ -112,3 +110,5 @@ export default class WorkspaceTabs extends React.Component {
         );
     }
 }
+
+export default WorkspaceTabs;

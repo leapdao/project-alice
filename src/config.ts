@@ -6,3 +6,7 @@ export const BOB_PRIVATE_KEY = "0x526c6c4178eded0d921ae46e7f0fb561ed87683a3f5570
 
 export const CHARLIE_PUBLIC_ADDRESS = "0xd44287c1f66b20b4bab49d6d4546b4bf0d990123";
 export const CHARLIE_PRIVATE_KEY = "0x22f9b4ac8ced2b5938857decef2d546f7690ea91bbf52a66d8b5d82f4902e41b";
+export const GENESIS_BLOCK = 2531562;
+export const WEB3_PROVIDER_BASE = "https://rinkeby.infura.io";
+export const PROVIDER_ETHERSCAN_BASE = "http://rinkeby.etherscan.io";
+export const TRANSACTIONS_PAGE_SIZE = 15;

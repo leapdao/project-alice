@@ -12,6 +12,11 @@ import "./style.scss";
 const PropTypes = require("prop-types");
 
 class BalancePanel extends React.Component<any> {
+
+    static defaultProps = {
+        balance: 0
+    };
+
     qrcode: React.RefObject<any>;
 
     constructor(props: any) {
@@ -27,8 +32,6 @@ class BalancePanel extends React.Component<any> {
             function (err: Error) {
                 if (err) {
                     console.error(err.message);
-                } else {
-                    console.log("success!");
                 }
             });
     }
@@ -39,7 +42,7 @@ class BalancePanel extends React.Component<any> {
 
     render() {
         const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
-        const balance = this.props.balance && new BigNumber(this.props.balance).div(decimals).toPrecision(2);
+        const balance =  new BigNumber(this.props.balance).div(decimals).toPrecision(2);
         const symbol = "ETH"; // ToDo: fetch value from token contract for plasma chain
         return (
             <div className="alice-balance-panel">
