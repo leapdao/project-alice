@@ -57,14 +57,33 @@ const getStatusClassName = (tx) => {
 
 const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
 
-const TxTr = observer(({tx}) => {
+const names = {
+  alice: "Alice",
+  bob: "Bob",
+  charlie: "Charlie",
+};
+
+const getName = (addresses, address) => {
+  const id = addresses[address.toLowerCase()];
+  if (id) {
+    return names[id];
+  }
+
+  return address;
+};
+
+const TxTr = observer(({tx, addresses}) => {
   return (
     <tr className={`tx-tr ${getStatusClassName(tx)}`}>
       <td className="tx-td tx-td_from">
-        <a className="alice-transactions-list_item-from" href={`#${tx.from}`} target="_blank">{tx.from}</a>
+        <a className="alice-transactions-list_item-from" href={`#${tx.from}`} target="_blank">
+          {getName(addresses, tx.from)}
+        </a>
       </td>
       <td className="tx-td tx-td_to">
-        <a className="alice-transactions-list_item-to" href={`#${tx.to}`} target="_blank">{tx.to}</a>
+        <a className="alice-transactions-list_item-to" href={`#${tx.to}`} target="_blank">
+          {getName(addresses, tx.to)}
+        </a>
       </td>
       <td className="tx-td">{new BigNumber(tx.value).div(decimals).toNumber()}</td>
       <td className="tx-td">{tx.gas}</td>
@@ -94,14 +113,14 @@ export const TransactionsPanel = observer((props: any) => (
         {props.transactions
           .filter(tx => getStatus(tx) === "pending")
           .map((tx) => (
-            <TxTr tx={tx} key={tx.transactionHash}/>
+            <TxTr tx={tx} key={tx.transactionHash} addresses={props.addresses}/>
           ))
         }
         {props.transactions
           .filter(tx => getStatus(tx) !== "pending")
           .sort((a, b) => b.blockNumber - a.blockNumber)
           .map((tx) => (
-            <TxTr tx={tx} key={tx.transactionHash}/>
+            <TxTr tx={tx} key={tx.transactionHash} addresses={props.addresses}/>
           ))
         }
       </tbody>

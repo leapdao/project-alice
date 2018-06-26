@@ -2,7 +2,6 @@ import * as React from "react";
 import BalancePanel from "./components/BalancePanel";
 import { TransactionsPanel } from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
-import { Signature } from "web3/types";
 import getWeb3 from "../../../../getWeb3";
 import {
     ALICE_PUBLIC_ADDRESS,
@@ -31,7 +30,7 @@ import "./style.scss";
 import { observer, inject } from "mobx-react";
 import { WalletTabPanelProps } from "./types";
 
-export default class WalletTabPanel extends React.Component<any> {
+export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
         store: {}
     };
@@ -68,7 +67,7 @@ export default class WalletTabPanel extends React.Component<any> {
     }
 
     render() {
-        const { store } = (this.props as WalletTabPanelProps);
+        const { store, stores } = this.props;
         return (
             <div className="alice-tab-panel">
                 <BalancePanel balance={store.balance} address={store.address} />
@@ -76,14 +75,19 @@ export default class WalletTabPanel extends React.Component<any> {
                 <hr className="alice-panel-separ" />
                 <TransactionsPanel
                     transactions={store.transactions}
-                    lastBlock={store.lastBlock}
-                    getLastTransactions={console.log}
+                    lastBlock={store.fromBlock}
+                    addresses={Object.keys(stores).reduce((o, key) => ({
+                        ...o,
+                        [stores[key].address.toLowerCase()]: key,
+                    }), {})}
+                    getLastTransactions={console.log.bind(console)}
                 />
             </div>
         );
     }
 }
 
-export const createWalletTabPanel = (wallet) => inject((store: any) => ({
-    store: store[wallet]
-}))(observer(WalletTabPanel));
+export const createWalletTabPanel = (wallet) => (inject((store: any) => ({
+    store: store[wallet],
+    stores: store,
+}))(observer(WalletTabPanel))) as any;

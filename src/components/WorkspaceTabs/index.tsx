@@ -57,7 +57,7 @@ class WalletTab extends React.Component<any> {
 }
 
 const createWalletTab = (wallet: string) => inject((store: any) => ({
-    store: store[wallet]
+    store: store[wallet],
 }))(observer(WalletTab));
 
 const AliceWalletTab = createWalletTab("alice");
@@ -70,9 +70,9 @@ export default class WorkspaceTabs extends React.Component {
     };
 
     handleSelect = (active) => {
-        this.setState((state) => ({
+        this.setState({
             active
-        }));
+        });
     }
 
     render() {
