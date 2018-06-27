@@ -29,6 +29,7 @@ const PropTypes = require("prop-types");
 import "./style.scss";
 import { observer, inject } from "mobx-react";
 import { WalletTabPanelProps } from "./types";
+import { makeTransfer } from "../../../../utils";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
@@ -36,26 +37,21 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
     };
 
     handleSendTransaction = async (to: string, value: number) => {
+        const { store } = this.props;
         const web3 = getWeb3(false);
-        const gasPrice = await web3.eth.getGasPrice();
-        const nonce = await web3.eth.getTransactionCount(this.props.store.address, "pending");
-        const tx = {
-            to,
-            value,
-            gas: 21000,
-            nonce,
-            gasPrice,
-        };
-        const { rawTransaction } = await web3.eth.accounts.signTransaction(tx, this.props.store.privKey);
+        const unspent = web3.getUnspent(store.address);
+        const height = web3.eth.getBlockNumber();
+        const tx = makeTransfer(unspent, store.address, to, value, store.privKey, height);
 
         const hash = await new Promise((resolve, reject) => {
-            web3.eth.sendSignedTransaction(rawTransaction, (err, txHash) => {
+            web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {
                 if (err) {
                     reject(err);
                 } else {
-                    this.props.store.add({
-                        ...tx,
-                        from: this.props.store.address,
+                    store.add({
+                        to,
+                        value,
+                        from: store.address,
                         hash: txHash,
                         status: false,
                     });

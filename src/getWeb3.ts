@@ -6,6 +6,7 @@ let web3http;
 let web3ws;
 
 const addCustomWeb3Methods = (web3) => {
+  console.log(web3);
   web3.extend({
     methods: [
       new web3.extend.Method({
