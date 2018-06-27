@@ -1,10 +1,11 @@
 import { observable, action, toJS, reaction } from "mobx";
 import TransactionModel from "./Transaction";
 import getWeb3 from "../getWeb3";
-import { size, findIndex, map, assign } from "lodash";
+import { size, findIndex, map, assign, memoize } from "lodash";
 import BigNumber from "bignumber.js";
 import { Transaction, TransactionReceipt } from "web3/types";
 import { GENESIS_BLOCK } from "../config";
+import Web3 from "web3";
 
 const range = (from: number, to: number) => Array.from(new Array(to - from), (_, i) => i + from);
 
@@ -13,14 +14,46 @@ const txOwnFilter = (address: string) => (transaction: Transaction) => {
         String(transaction.to).toLowerCase() === address.toLowerCase();
 };
 
+const readBlocksInBatch = (fromBlock: number, toBlock: number): Promise<Array<any>> => {
+    const web3 = getWeb3();
+    return new Promise((resolve) => {
+        const batch = new web3.eth.BatchRequest();
+        const result = [];
+        let received = 0;
+        const callback = i => (err, block) => {
+            result[i - fromBlock] = block;
+            if (received === toBlock - fromBlock) {
+                resolve(result);
+            }
+            received += 1;
+        };
+        for (let i = fromBlock; i <= toBlock; i += 1) {
+            batch.add(web3.eth.getBlock.request(i, true, callback(i)));
+        }
+        batch.execute();
+    });
+};
+
+// request once for all stores
+const getBlocksRange = memoize((fromBlock: number, toBlock: number) => {
+    console.log(fromBlock, toBlock);
+
+    if (false) { // parsec node doesn't support batches
+        const web3 = getWeb3();
+        return Promise.all(range(fromBlock, toBlock + 1)
+            .map(i => web3.eth.getBlock(i, true)));
+    }
+    return readBlocksInBatch(fromBlock, toBlock);
+});
+
 const getTransactions = async (address: string, fromBlock: number, toBlock: number) => {
     if (fromBlock === toBlock) {
         return [];
     }
 
-    const web3 = getWeb3();
-    const blocks = await Promise.all(range(fromBlock, toBlock + 1)
-        .map(i => web3.eth.getBlock(i, true)));
+    fromBlock = Math.max(fromBlock, toBlock - 1000); // limit blocks number to 1000
+
+    const blocks = await getBlocksRange(fromBlock, toBlock);
 
     const transactions = (
         blocks
