@@ -47,6 +47,11 @@
                 &_to a{
                     color: #44b6fe;
                     text-decoration: none;
+                    
+                    &:hover {
+                        color: #FFFFFF;
+                        text-decoration: underline;
+                    }
 
                 }
             }
