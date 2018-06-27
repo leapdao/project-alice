@@ -1,5 +1,6 @@
 import * as Web3 from "web3";
 import { WEB3_PROVIDER_BASE, WEB3_PROVIDER_BASE_WS } from "./config";
+import { Outpoint } from "parsec-lib";
 
 let web3http;
 let web3ws;
@@ -14,7 +15,10 @@ const addCustomWeb3Methods = (web3) => {
         inputFormatters: [
           web3.extend.formatters.inputAddressFormatter,
         ],
-        outputFormatter: a => a,
+        outputFormatter: unspent => unspent.map(u => ({
+          output: u.output,
+          outpoint: Outpoint.fromRaw(u.outpoint),
+        })),
       })
     ]
   });
