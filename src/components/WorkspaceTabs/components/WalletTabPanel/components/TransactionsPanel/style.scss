@@ -75,6 +75,12 @@
             
                     .tx-td{
                         align-self: center;
+
+                        &-empty,
+                        &-pending{
+                            color: rgba(255,255,255,0.6);
+                            text-align: center;
+                        }
                     }
             
                     &.success{

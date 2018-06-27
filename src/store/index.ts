@@ -74,6 +74,15 @@ const getBalance = (address: string): Promise<BigNumber> => new Promise((resolve
     });
 });
 
+const loadStore = (address) => {
+    const store = localStorage.getItem(`psc_store_${address.substr(2, 6)}`);
+    return store && JSON.parse(store) || {
+        fromBlock: GENESIS_BLOCK,
+        balance: 0,
+        loading: true
+    };
+};
+
 class Store {
     @observable transactions = [];
     @observable fromBlock: number;
@@ -81,6 +90,7 @@ class Store {
     @observable address: string;
     @observable privKey: string;
     @observable balance: number;
+    @observable loading: boolean;
 
     // ToDo: pass privKey only. Address can be derrived from private key
     constructor(address: string, privKey: string) {
@@ -88,31 +98,16 @@ class Store {
         this.privKey = privKey;
 
         try {
-            let initialStore;
-            const store = localStorage.getItem(`psc_store_${this.address.substr(2, 6)}`);
+            const {transactions, ...store}: any = loadStore(this.address);
 
-            if (store) {
-                initialStore = JSON.parse(store);
-            } else {
-                initialStore = {
-                    fromBlock: GENESIS_BLOCK,
-                    balance: 0
-                };
-            }
+            assign(this, store);
 
-            if (initialStore) {
+            if (transactions) {
                 assign(this, {
-                    fromBlock: initialStore.fromBlock,
-                    balance: initialStore.balance
+                    transactions: transactions.map((transaction: TransactionReceipt) => {
+                        return new TransactionModel(transaction);
+                    })
                 });
-
-                if (initialStore.transactions) {
-                    assign(this, {
-                        transactions: initialStore.transactions.map((transaction: TransactionReceipt) => {
-                            return new TransactionModel(transaction);
-                        })
-                    });
-                }
             }
 
             this.getBalance(address);
@@ -139,9 +134,10 @@ class Store {
             this.transactions[index].update(transaction);
         }
 
+        this.loading = false;
         this.notifications = this.notifications + 1;
         this.save();
-    };
+    }
 
     @action
     getBalance = async (address) => {
@@ -152,7 +148,7 @@ class Store {
         } catch (err) {
             console.error(err.message);
         }
-    };
+    }
 
     @action
     load = async (address: string, fromBlock: number = GENESIS_BLOCK) => {
@@ -181,7 +177,7 @@ class Store {
                 this.load(address, fromBlock);
             }, 5000);
         }
-    };
+    }
 
     save = () => {
         localStorage.setItem(`psc_store_${this.address.substr(2, 6)}`, JSON.stringify({
@@ -189,7 +185,7 @@ class Store {
             fromBlock: this.fromBlock,
             balance: this.balance
         }));
-    };
+    }
 }
 
 export default Store;

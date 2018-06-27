@@ -75,6 +75,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
                 <InputPanel balance={store.balance} onSend={this.handleSendTransaction} address={store.address}/>
                 <hr className="alice-panel-separ" />
                 <TransactionsPanel
+                    loading={store.loading}
                     transactions={store.transactions}
                     lastBlock={store.fromBlock}
                     addresses={Object.keys(stores).reduce((o, key) => ({

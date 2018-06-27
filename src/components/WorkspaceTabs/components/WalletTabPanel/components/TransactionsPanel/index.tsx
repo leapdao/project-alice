@@ -39,15 +39,15 @@ class TxStatus extends React.Component<any> {
 
     render() {
         if (this.props.tx.blockNumber) {
-            return <Checkmark animation={this.state.animation}/>;
+            return <Checkmark animation={this.state.animation} />;
         }
         switch (getStatus(this.props.tx)) {
             case "success":
-                return <Checkmark animation={this.state.animation}/>;
+                return <Checkmark animation={this.state.animation} />;
             case "failed":
-                return <Cross animation={this.state.animation}/>;
+                return <Cross animation={this.state.animation} />;
             default:
-                return <Pending/>;
+                return <Pending />;
         }
     }
 }
@@ -60,6 +60,20 @@ const names = {
     charlie: "Charlie",
 };
 
+const EmptyTr = () => (
+    <tr className="tx-tr">
+        <td className="tx-td tx-td-empty">There are no matching entries</td>
+    </tr>
+);
+
+const PendingTr = () => (
+    <tr className="tx-tr">
+        <td className="tx-td tx-td-pending">
+            <Pending />
+        </td>
+    </tr>
+);
+
 const getName = (addresses, address) => {
     const id = addresses[address.toLowerCase()];
     if (id) {
@@ -69,7 +83,10 @@ const getName = (addresses, address) => {
     return address;
 };
 
-const TxTr = observer(({tx, addresses}) => {
+const getFee = (tx) => tx.gasPrice && new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber() || null;
+const getGasPrice = (tx) => tx.gasPrice && new BigNumber(tx.gasPrice).div(decimals).toNumber() || null;
+
+const TxTr = observer(({ tx, addresses }) => {
     return (
         <tr className={`tx-tr ${getStatus(tx)}`}>
             <td className="tx-td tx-td_hash">
@@ -101,15 +118,15 @@ const TxTr = observer(({tx, addresses}) => {
             </td>
             <td className="tx-td">{new BigNumber(tx.value).div(decimals).toNumber()}</td>
             <td className="tx-td">{tx.gas}</td>
-            <td className="tx-td">{tx.gasPrice && new BigNumber(tx.gasPrice).div(decimals).toNumber()}</td>
-            <td className="tx-td">{tx.gasPrice && new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber()}</td>
-            <td className="tx-td"><TxStatus tx={tx}/></td>
+            <td className="tx-td">{getGasPrice(tx)}</td>
+            <td className="tx-td">{getFee(tx)}</td>
+            <td className="tx-td"><TxStatus tx={tx} /></td>
         </tr>
     );
 });
 
 @observer
-class TransactionsPanel extends React.Component {
+class TransactionsPanel extends React.Component<any> {
     state = {
         page: 0
     };
@@ -121,33 +138,41 @@ class TransactionsPanel extends React.Component {
     }
 
     render() {
-        const {transactions, addresses} = this.props;
-        const {page} = this.state;
+        const { transactions, addresses, loading } = this.props;
+        const { page } = this.state;
         const pageCount = Math.ceil(transactions.length / TRANSACTIONS_PAGE_SIZE);
         return (
             <div className="alice-transactions-panel">
                 <h4 className="alice-transactions-panel_header">Tx History:</h4>
                 <table className="tx-table">
                     <thead className="tx-thead">
-                    <tr className="tx-tr">
-                        <th className="tx-th">TX HASH</th>
-                        <th className="tx-th">FROM</th>
-                        <th className="tx-th">TO</th>
-                        <th className="tx-th">VALUE</th>
-                        <th className="tx-th">GAS</th>
-                        <th className="tx-th">GAS PRICE</th>
-                        <th className="tx-th">TX FEE</th>
-                        <th className="tx-th"/>
-                    </tr>
+                        <tr className="tx-tr">
+                            <th className="tx-th">TX HASH</th>
+                            <th className="tx-th">FROM</th>
+                            <th className="tx-th">TO</th>
+                            <th className="tx-th">VALUE</th>
+                            <th className="tx-th">GAS</th>
+                            <th className="tx-th">GAS PRICE</th>
+                            <th className="tx-th">TX FEE</th>
+                            <th className="tx-th" />
+                        </tr>
                     </thead>
                     <tbody className="tx-tbody">
-                    {
-                        sortBy(transactions, [(tx) => getStatus(tx) !== "pending", (tx) => -tx.blockNumber])
-                            .slice(page * TRANSACTIONS_PAGE_SIZE, page * TRANSACTIONS_PAGE_SIZE + TRANSACTIONS_PAGE_SIZE)
-                            .map((tx) => (
-                                <TxTr tx={tx} key={tx.transactionHash} addresses={addresses}/>
-                            ))
-                    }
+                        {
+                            transactions.length > 0 ?
+                                sortBy(transactions, [(tx) => getStatus(tx) !== "pending", (tx) => -tx.blockNumber])
+                                    .slice(
+                                        page * TRANSACTIONS_PAGE_SIZE,
+                                        page * TRANSACTIONS_PAGE_SIZE + TRANSACTIONS_PAGE_SIZE
+                                    )
+                                    .map((tx) => (
+                                        <TxTr tx={tx} key={tx.transactionHash} addresses={addresses} />
+                                    )) : loading ? (
+                                        <PendingTr />
+                                    ) : (
+                                        <EmptyTr />
+                                    )
+                        }
                     </tbody>
                 </table>
                 {
