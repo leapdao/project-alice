@@ -8,5 +8,7 @@ export const CHARLIE_PUBLIC_ADDRESS = "0xd44287c1f66b20b4bab49d6d4546b4bf0d99012
 export const CHARLIE_PRIVATE_KEY = "0x22f9b4ac8ced2b5938857decef2d546f7690ea91bbf52a66d8b5d82f4902e41b";
 export const GENESIS_BLOCK = 2531562;
 export const WEB3_PROVIDER_BASE = "https://rinkeby.infura.io";
-export const PROVIDER_ETHERSCAN_BASE = "http://rinkeby.etherscan.io";
+// if websocket is not supported, WEB3_PROVIDER_BASE_WS should be equal to WEB3_PROVIDER_BASE
+export const WEB3_PROVIDER_BASE_WS = "wss://rinkeby.infura.io/_ws" as string;
+export const PROVIDER_ETHERSCAN_BASE = "http://rinkeby.etherscan.io" as string;
 export const TRANSACTIONS_PAGE_SIZE = 15;

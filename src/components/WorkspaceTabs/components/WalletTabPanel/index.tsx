@@ -36,7 +36,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
     };
 
     handleSendTransaction = async (to: string, value: number) => {
-        const web3 = getWeb3();
+        const web3 = getWeb3(false);
         const gasPrice = await web3.eth.getGasPrice();
         const nonce = await web3.eth.getTransactionCount(this.props.store.address, "pending");
         const tx = {
@@ -47,6 +47,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
             gasPrice,
         };
         const { rawTransaction } = await web3.eth.accounts.signTransaction(tx, this.props.store.privKey);
+
         const hash = await new Promise((resolve, reject) => {
             web3.eth.sendSignedTransaction(rawTransaction, (err, txHash) => {
                 if (err) {

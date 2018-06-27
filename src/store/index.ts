@@ -22,7 +22,6 @@ const getTransactions = async (address: string, fromBlock: number, toBlock: numb
     const blocks = await Promise.all(range(fromBlock, toBlock + 1)
         .map(i => web3.eth.getBlock(i, true)));
 
-
     const transactions = (
         blocks
             .filter(b => b && b.transactions)
