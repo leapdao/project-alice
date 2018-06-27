@@ -81,10 +81,10 @@ class WorkspaceTabs extends React.Component<any> {
                         <AliceWalletTab name="Alice" icon={alice} active={this.state.active === 0} />
                     </Tab>
                     <Tab>
-                        <BobWalletTab name="Bob" icon={alice} active={this.state.active === 1} />
+                        <BobWalletTab name="Bob" icon={bob} active={this.state.active === 1} />
                     </Tab>
                     <Tab>
-                        <CharlieWalletTab name="Charlie" icon={alice} active={this.state.active === 2} />
+                        <CharlieWalletTab name="Charlie" icon={charlie} active={this.state.active === 2} />
                     </Tab>
                     <Tab className="react-tabs__tab flex-right">
                         <div className="tab tab-help">
