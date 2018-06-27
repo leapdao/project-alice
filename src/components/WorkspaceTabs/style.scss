@@ -74,13 +74,6 @@
       opacity: 0;
     }
 
-    &:active {
-      .react-tabs__tab-label {
-        color: #FFFFFF;
-        -webkit-text-fill-color: initial;
-      }
-    }
-
     &--selected {
       .tab {
         &:after {
