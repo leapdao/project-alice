@@ -30,10 +30,10 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
         event.preventDefault();
         event.stopPropagation();
         this.props.onSelect(this.props.option, event);
-    };
+    }
 
     render() {
-        const {option} = this.props;
+        const { option } = this.props;
         return (
             <div
                 className="select-address-option"
@@ -58,14 +58,14 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
         event.preventDefault();
         event.stopPropagation();
 
-        this.setState({receiver});
+        this.setState({ receiver });
     }
 
     valueRenderer = (receiver) => (
         <span>Send to address: <strong>{receiver.name}</strong></span>
     )
 
-    arrowRenderer = ({isOpen}) => (
+    arrowRenderer = ({ isOpen }) => (
         <img
             className={`alice-input-panel_address-dropdown${isOpen ? " opened" : ""}`}
             src={isOpen ? dropdownWhite : dropdown}
@@ -75,9 +75,9 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     handleChangeAmount = (e: React.FormEvent<HTMLInputElement>) => {
         const { value } = e.currentTarget;
 
-        console.log(value)
+        console.log(value);
         this.setState({
-            amount: /^\d*\.?\d*$/.test(value) ? value : value === "" ? value : this.state.amount ,
+            amount: /^\d*\.?\d{0,18}$/.test(value) ? value : value === "" ? value : this.state.amount,
         });
     }
 
@@ -86,7 +86,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
         this.setState(state => {
             const amount = Number(state.amount);
             if (isNaN(amount) || !amount || amount < 0) {
-                return {amount: ""};
+                return { amount: "" };
             }
 
             return {
@@ -96,24 +96,24 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     }
 
     handleSetMaxAmount = () => {
-        const {balance} = (this.props as any);
+        const { balance } = (this.props as any);
         this.setState({
             amount: new BigNumber(balance).div(decimals).toPrecision(2),
         });
     }
 
     handleSendTransaction = async () => {
-        const {amount} = this.state;
-        const {balance} = (this.props as any);
+        const { amount } = this.state;
+        const { balance } = (this.props as any);
         if (amount && this.state.receiver) {
-            this.setState({sending: true});
+            this.setState({ sending: true });
             try {
                 await this.props.onSend(
                     this.state.receiver.account,
                     BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
                 );
             } finally {
-                this.setState({amount: undefined, receiver: null, sending: false});
+                this.setState({ amount: undefined, receiver: null, sending: false });
             }
         }
     }

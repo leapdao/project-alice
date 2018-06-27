@@ -8,7 +8,9 @@ const logo = require("./img/logo-white.svg");
 
 export default () => (
     <header>
-        <img id="logo" src={logo} alt="PARSEC Labs"/>
-        <NavBar/>
+        <a href="https://parseclabs.org/">
+            <img id="logo" src={logo} alt="PARSEC Labs" />
+        </a>
+        <NavBar />
     </header>
 );

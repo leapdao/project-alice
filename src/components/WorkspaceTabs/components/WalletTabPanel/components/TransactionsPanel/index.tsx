@@ -143,17 +143,17 @@ class TransactionsPanel extends React.Component<any> {
         const pageCount = Math.ceil(transactions.length / TRANSACTIONS_PAGE_SIZE);
         return (
             <div className="alice-transactions-panel">
-                <h4 className="alice-transactions-panel_header">Tx History:</h4>
+                <h4 className="alice-transactions-panel_header">Transactions History:</h4>
                 <table className="tx-table">
                     <thead className="tx-thead">
                         <tr className="tx-tr">
-                            <th className="tx-th">TX HASH</th>
+                            <th className="tx-th">#</th>
                             <th className="tx-th">FROM</th>
                             <th className="tx-th">TO</th>
                             <th className="tx-th">VALUE</th>
                             <th className="tx-th">GAS</th>
                             <th className="tx-th">GAS PRICE</th>
-                            <th className="tx-th">TX FEE</th>
+                            <th className="tx-th">FEE</th>
                             <th className="tx-th" />
                         </tr>
                     </thead>
