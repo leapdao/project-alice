@@ -1,0 +1,132 @@
+.react-tabs {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+
+  &__tab-list {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0 2.5em;
+  }
+  &__tab {
+    outline: none !important;
+    position: relative;
+
+    &:not(:last-child) {
+      margin-right: 2em;
+    }
+
+    &-icon {
+      width: 1.2em;
+      margin: 0 0.5em 0 0;
+    }
+
+    .tab {
+      position: relative;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 2.35em;
+      font-weight: 800;
+      color: #FFF;
+
+      user-select: none;
+
+      display: flex;
+      align-items: center;
+      padding-bottom: 0.5em;
+
+      &-help {
+        padding-bottom: 0.75em;
+      }
+    }
+
+    &--selected,
+    &:hover,
+    &:focus {
+      .react-tabs__tab-label {
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to right, #4facfe, #00f2fe), linear-gradient(#ffffff, #ffffff);
+      }
+
+    }
+
+    &:not(.active):hover {
+      &:after {
+        opacity: 0;
+        -webkit-animation: b .3s linear 1 forwards;
+        animation: b .3s linear 1 forwards;
+      }
+    }
+
+    &:after {
+      content: "";
+      width: 100%;
+      height: 3px;
+      left: 0;
+      background-color: #08a8ee;
+      background-image: -webkit-gradient(linear, left top, right top, from(#00adff), to(#00f2fe));
+      background-image: linear-gradient(90deg, #00adff, #00f2fe);
+      position: absolute;
+      bottom: 0;
+      opacity: 0;
+    }
+
+    &--selected {
+      .tab {
+        &:after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 3px;
+          background-image: linear-gradient(to right, #4facfe, #00f2fe);
+        }
+      }
+    }
+  }
+}
+
+@-webkit-keyframes b {
+  0% {
+    opacity: 0
+  }
+  30% {
+    opacity: .8
+  }
+  40% {
+    opacity: .1
+  }
+  65% {
+    opacity: .9
+  }
+  78% {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes b {
+  0% {
+    opacity: 0
+  }
+  30% {
+    opacity: .8
+  }
+  40% {
+    opacity: .1
+  }
+  65% {
+    opacity: .9
+  }
+  78% {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}

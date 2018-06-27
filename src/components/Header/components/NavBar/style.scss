@@ -1,0 +1,38 @@
+header {
+    nav {
+        margin-left: auto;
+
+        ul {
+            li {
+                float: left;
+                font-weight: bold;
+                text-transform: uppercase;
+                list-style: none;
+                margin: 0 0.7em;
+
+                a {
+                    color: #FFF;
+                    text-decoration: none;
+                    font-size: 1.3em;
+                    line-height: 1.5em;
+                
+                    &:hover {
+                        -webkit-background-clip: text;
+                        background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-image: linear-gradient(to right, #4facfe, #00f2fe), linear-gradient(#ffffff, #ffffff);
+                    }
+
+                    &:active{
+                        color: #FFFFFF;
+                        -webkit-text-fill-color: initial;
+                    }
+
+                    .nav-social-icon{
+                        width: 1.5em;
+                    }
+                }
+            }
+        }
+    }
+}

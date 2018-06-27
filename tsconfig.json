@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "outDir": "build/dist",
+    "module": "commonjs",
+    "target": "es5",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "sourceMap": true,
+    "allowJs": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "src/types/*"
+      ],
+      "src/*": [
+        "src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts"
+  ],
+  "include": [
+    "./types",
+    "./node_modules/web3",
+    "./node_modules/@machinomy/types-ethereumjs-tx"
+  ],
+  "types": [
+    "typePatches"
+  ]
+}
