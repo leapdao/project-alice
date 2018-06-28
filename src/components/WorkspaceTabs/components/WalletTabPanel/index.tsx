@@ -1,8 +1,7 @@
 import * as React from "react";
-import BalancePanel from "./components/BalancePanel";
-import TransactionsPanel from "./components/TransactionsPanel";
-import InputPanel from "./components/InputPanel";
-import getWeb3 from "../../../../getWeb3";
+import { observer, inject } from "mobx-react";
+import { helpers } from "parsec-lib";
+
 import {
     ALICE_PUBLIC_ADDRESS,
     ALICE_PRIVATE_KEY,
@@ -11,25 +10,13 @@ import {
     CHARLIE_PUBLIC_ADDRESS,
     CHARLIE_PRIVATE_KEY
 } from "./../../../../config";
-
-const keys = {
-    "alice": ALICE_PRIVATE_KEY,
-    "bob": BOB_PRIVATE_KEY,
-    "charlie": CHARLIE_PRIVATE_KEY
-};
-
-const addresses = {
-    "alice": ALICE_PUBLIC_ADDRESS,
-    "bob": BOB_PUBLIC_ADDRESS,
-    "charlie": CHARLIE_PUBLIC_ADDRESS
-};
-
-const PropTypes = require("prop-types");
+import getWeb3 from "../../../../getWeb3";
 
 import "./style.scss";
-import { observer, inject } from "mobx-react";
 import { WalletTabPanelProps } from "./types";
-import { makeTransfer } from "../../../../utils";
+import BalancePanel from "./components/BalancePanel";
+import TransactionsPanel from "./components/TransactionsPanel";
+import InputPanel from "./components/InputPanel";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
@@ -41,7 +28,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const web3 = getWeb3(false);
         const unspent = await web3.getUnspent(store.address);
         const height = await web3.eth.getBlockNumber();
-        const tx = makeTransfer(unspent, store.address, to, value, store.privKey, height);
+        const tx = helpers.makeTransferTxFromUnspent(unspent, store.address, to, value, store.privKey, height);
 
         const hash = await new Promise((resolve, reject) => {
             web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {
