@@ -39,8 +39,8 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
     handleSendTransaction = async (to: string, value: number) => {
         const { store } = this.props;
         const web3 = getWeb3(false);
-        const unspent = web3.getUnspent(store.address);
-        const height = web3.eth.getBlockNumber();
+        const unspent = await web3.getUnspent(store.address);
+        const height = await web3.eth.getBlockNumber();
         const tx = makeTransfer(unspent, store.address, to, value, store.privKey, height);
 
         const hash = await new Promise((resolve, reject) => {

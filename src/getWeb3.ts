@@ -6,20 +6,19 @@ let web3http;
 let web3ws;
 
 const addCustomWeb3Methods = (web3) => {
-  console.log(web3);
   web3.extend({
     methods: [
       new web3.extend.Method({
-        name: "getUnspents",
-        call: "parsec_unspents",
+        name: "getUnspent",
+        call: "parsec_unspent",
         params: 1,
         inputFormatters: [
           web3.extend.formatters.inputAddressFormatter,
         ],
-        outputFormatter: unspent => unspent.map(u => ({
-          output: u.output,
-          outpoint: Outpoint.fromRaw(u.outpoint),
-        })),
+        outputFormatter: unspent => ({
+          output: unspent.output,
+          outpoint: Outpoint.fromRaw(unspent.outpoint),
+        }),
       })
     ]
   });

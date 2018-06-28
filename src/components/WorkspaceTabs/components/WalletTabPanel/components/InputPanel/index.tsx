@@ -6,6 +6,7 @@ import SendButton from "./components/SendButton";
 import { InputPanelState } from "./types";
 
 import TooltipNotification from "../../../../../common/TooltipNotification";
+import { decimals } from "../../../../../../config";
 
 const dropdown = require("./img/dropdown.svg");
 const dropdownWhite = require("./img/dropdown-white.svg");
@@ -14,7 +15,7 @@ import {
     ALICE_PUBLIC_ADDRESS,
     BOB_PUBLIC_ADDRESS,
     CHARLIE_PUBLIC_ADDRESS,
-    SYMBOL
+    symbol
 } from "./../../../../../../config";
 
 const users = [{
@@ -53,8 +54,6 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
     }
 }
 
-const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
-
 class InputPanel extends React.PureComponent<any, InputPanelState> {
     state: InputPanelState = {
         receiver: null,
@@ -87,7 +86,6 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     handleChangeAmount = (e: React.FormEvent<HTMLInputElement>) => {
         const { value } = e.currentTarget;
 
-        console.log(value);
         this.setState({
             amount: /^\d*\.?\d{0,18}$/.test(value) ? value : value === "" ? value : this.state.amount,
         });
@@ -129,14 +127,14 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                     sent: true,
                     hiddenNotification: false,
                     notificationText:
-                        `${this.state.amount} ${SYMBOL} successfully sent to ${this.state.receiver.name}`
+                        `${this.state.amount} ${symbol} successfully sent to ${this.state.receiver.name}`
                 }), () => {
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(() => {
                         this.setState(() => ({
                             hiddenNotification: true
                         }));
-        
+
                         this.timeout = setTimeout(() => {
                             this.setState(() => ({
                                 sent: false,

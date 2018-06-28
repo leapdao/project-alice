@@ -1,15 +1,18 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { sortBy } from "lodash";
+import BigNumber from "bignumber.js";
+
+import "./style.scss";
 
 const ReactPaginate = require("react-paginate");
 
 import Pending from "./../../../../../common/Pending";
 import Checkmark from "./../../../../../common/Checkmark";
-
-import "./style.scss";
-import BigNumber from "bignumber.js";
 import Cross from "./../../../../../common/Cross";
+
+import { decimals } from "../../../../../../config";
+
 import { PROVIDER_ETHERSCAN_BASE, TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
 
 const getStatus = (original) => {
@@ -51,8 +54,6 @@ class TxStatus extends React.Component<any> {
         }
     }
 }
-
-const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
 
 const names = {
     alice: "Alice",
