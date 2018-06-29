@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react";
-import { helpers } from "parsec-lib";
+import { Tx, helpers } from "parsec-lib";
 
 import {
     ALICE_PUBLIC_ADDRESS,
@@ -28,7 +28,9 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const web3 = getWeb3(false);
         const unspent = await web3.getUnspent(store.address);
         const height = await web3.eth.getBlockNumber();
-        const tx = helpers.makeTransferTxFromUnspent(unspent, store.address, to, value, store.privKey, height);
+        const inputs = helpers.calcInputs(unspent, value);
+        const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value);
+        const tx = Tx.transfer(height, inputs, outputs).signAll(store.privKey);
 
         const hash = await new Promise((resolve, reject) => {
             web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {
