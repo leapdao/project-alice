@@ -7,9 +7,63 @@ const copy = require("./img/copy.svg");
 const copyWhite = require("./img/copy-white.svg");
 const psc = require("./img/psc.svg");
 
+import CopiedNotification from "./components/CopiedNotification";
+
 import "./style.scss";
 
 const PropTypes = require("prop-types");
+
+class CopyButton extends React.PureComponent<any> {
+    state = {
+        copied: false,
+        hidden: false
+    };
+
+    timeout: NodeJS.Timer;
+
+    handleCopy = () => {
+        const {onClick} = this.props;
+
+        if (typeof onClick === "function") {
+            onClick();
+        }
+
+        this.setState(() => ({
+            copied: true,
+            hidden: false
+        }), () => {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                this.setState(() => ({
+                    hidden: true
+                }));
+
+                this.timeout = setTimeout(() => {
+                    this.setState(() => ({
+                        copied: false,
+                        hidden: false
+                    }));
+                }, 1000);
+            }, 3000);
+        });
+    }
+
+    render() {
+        return (
+            <div className="alice-balance-panel_address-copy_button">
+                            <button onClick={this.handleCopy}>
+                                <img src={copy} className="alice-balance-panel_address-copy_button_icon" />
+                                <img src={copyWhite} className="alice-balance-panel_address-copy_button_icon-white" />
+                            </button>
+                            {
+                                this.state.copied && (
+                                    <CopiedNotification hidden={this.state.hidden}/>
+                                )
+                            }
+                        </div>
+        );
+    }
+}
 
 class BalancePanel extends React.Component<any> {
 
@@ -18,6 +72,10 @@ class BalancePanel extends React.Component<any> {
     };
 
     qrcode: React.RefObject<any>;
+
+    state = {
+        copied: false
+    };
 
     constructor(props: any) {
         super(props);
@@ -35,11 +93,6 @@ class BalancePanel extends React.Component<any> {
                 }
             });
     }
-
-    handleCopy = () => {
-        copytoclipboard(this.props.address);
-    }
-
     render() {
         const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
         const balance = new BigNumber(this.props.balance).div(decimals).toPrecision(2);
@@ -54,12 +107,7 @@ class BalancePanel extends React.Component<any> {
                     </div>
                     <div className="alice-balance-panel_address">
                         <span>Address: <strong className="white">{this.props.address}</strong></span>
-                        <div className="alice-balance-panel_address-copy_button">
-                            <button onClick={this.handleCopy}>
-                                <img src={copy} className="alice-balance-panel_address-copy_button_icon" />
-                                <img src={copyWhite} className="alice-balance-panel_address-copy_button_icon-white" />
-                            </button>
-                        </div>
+                        <CopyButton onClick={copytoclipboard.bind(this, this.props.address)}/>
                     </div>
                 </div>
             </div>

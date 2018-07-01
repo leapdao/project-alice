@@ -1,0 +1,51 @@
+.copied-notification{
+    position: absolute;
+    display: flex;
+    width: 14em;
+    font-size: 0.9em;
+    border-radius: 10px;
+    color: #ffffff;
+    background-color: rgba(13, 24, 32, 0.95);
+    padding: 1em 1.1em;
+    align-items: center;
+    transform: translate(-34%, 0);
+    top: -4em;
+    animation: show-copied 0.3s ease-in-out forwards;
+
+    &_icon {
+        flex-basis: 37px;
+        margin-left: -12px;
+        margin-right: 12px;
+    }
+
+    &_text {
+        flex: 1 1;
+        margin-bottom: -3px;
+    
+    }
+
+    &.hidden{
+        animation: hide-copied 0.3s ease-in-out forwards;
+    }
+}
+
+@keyframes hide-copied {
+    0% {
+        opacity: 1;
+      }
+      100% {
+          opacity: 0;
+      }
+}
+
+@keyframes show-copied {
+    0% {
+      opacity: 0;
+      top: -1em;
+    }
+    100% {
+        opacity: 1;
+        top: -4em;
+    }
+  }
+  

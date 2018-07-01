@@ -4,12 +4,12 @@ import { sortBy } from "lodash";
 
 const ReactPaginate = require("react-paginate");
 
-import Pending from "./components/Pending";
-import Checkmark from "./components/Checkmark";
+import Pending from "./../../../../../common/Pending";
+import Checkmark from "./../../../../../common/Checkmark";
 
 import "./style.scss";
 import BigNumber from "bignumber.js";
-import Cross from "./components/Cross";
+import Cross from "./../../../../../common/Cross";
 import { PROVIDER_ETHERSCAN_BASE, TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
 
 const getStatus = (original) => {
