@@ -178,8 +178,8 @@ class TransactionsPanel extends React.Component<any> {
                 {
                     transactions.length > TRANSACTIONS_PAGE_SIZE && (
                         <ReactPaginate
-                            nextLabel={">"}
-                            previousLabel={"<"}
+                            nextLabel={"❯"}
+                            previousLabel={"❮"}
                             pageCount={pageCount}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={5}
