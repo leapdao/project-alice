@@ -58,11 +58,14 @@
                     .Select-multi-value-wrapper{
                         display: flex;
                         flex: 1 1;
+                        margin-bottom: -3px;
                     }
                     .Select-input{
                         outline: none;
                     }
-
+                    .Select-arrow-zone{
+                        margin-bottom: -3px;
+                    }
                 }
 
                 .Select-menu{
@@ -138,7 +141,7 @@
             &-max{
                 position: absolute;
                 right: 1.5em;
-                top: 50%;
+                top: 53%;
                 transform: translateY(-50%);
                 color: #44b6fe;
                 background: none;

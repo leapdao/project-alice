@@ -27,9 +27,27 @@ header {
                         color: #FFFFFF;
                         -webkit-text-fill-color: initial;
                     }
+                }
+
+                &.nav-social{
+                    &:hover{
+                        .nav-social-icon{
+                            display: none;
+
+                            &-white{
+                                width: 1.5em;
+                                display: initial;
+                            }
+                        }
+                    }
 
                     .nav-social-icon{
                         width: 1.5em;
+
+                        &-white{
+                            width: 1.5em;
+                            display: none;
+                        }
                     }
                 }
             }
