@@ -152,7 +152,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                         className="alice-input-panel_amount-max"
                         onClick={this.handleSetMaxAmount}
                     >
-                        max
+                        Max
                     </button>
                 </label>
 

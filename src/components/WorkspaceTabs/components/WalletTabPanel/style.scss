@@ -95,7 +95,7 @@
             border-radius: 0.8em;
             height: 3.5em;
             align-items: center;
-            padding: 0 4em 0 1.5em;
+            padding: 0.2em 4em 0 1.5em;
             background: none;
             outline: none;
             color: #FFFFFF;
@@ -146,8 +146,10 @@
                 font-size: 1em;
                 cursor: pointer;
                 outline: none;
+                font-family: Rogan, sans-serif;
 
-                &:active{
+                &:hover,
+                &.hover{
                     color: #FFFFFF;
                 }
             }

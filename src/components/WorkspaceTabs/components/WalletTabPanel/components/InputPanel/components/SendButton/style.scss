@@ -5,21 +5,24 @@ button.tx-send{
     border-radius: 15px;
     background-image: linear-gradient(to right, #4facfe, #00f2fe);
 
-    font-size: 1.3em;
+    font-size: 1.65em;
+    font-family: Rogan, sans-serif;
+    line-height: 2.8em;
     font-weight: 800;
     color: #101c3c;
     text-transform: uppercase;
     outline: none;
     cursor: pointer;
 
-    &:active,
-    &.active{
+    &:hover:not(:disabled),
+    &.hover:not(.disabled){
         background: #FFF;
     }
 
     &:disabled,
     .disabled{
-        background-image: linear-gradient(to right, #26537b, #23777b);
+        // background-image: linear-gradient(to right, #26537b, #23777b);
+        opacity: 0.5;
         cursor: not-allowed;
     }
 }
