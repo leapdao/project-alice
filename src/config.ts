@@ -12,3 +12,5 @@ export const WEB3_PROVIDER_BASE = "https://rinkeby.infura.io";
 export const WEB3_PROVIDER_BASE_WS = "wss://rinkeby.infura.io/_ws" as string;
 export const PROVIDER_ETHERSCAN_BASE = "http://rinkeby.etherscan.io" as string;
 export const TRANSACTIONS_PAGE_SIZE = 15;
+
+export const SYMBOL = "ETH";
