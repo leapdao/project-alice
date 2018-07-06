@@ -3,7 +3,9 @@ import BigNumber from "bignumber.js";
 import Select, { OptionComponentProps, OptionValues } from "react-select";
 
 import SendButton from "./components/SendButton";
-import { InputPanelProps, SelectAddressOption, InputPanelState } from "./types";
+import { InputPanelState } from "./types";
+
+import TooltipNotification from "../../../../../common/TooltipNotification";
 
 const dropdown = require("./img/dropdown.svg");
 const dropdownWhite = require("./img/dropdown-white.svg");
@@ -11,7 +13,8 @@ const dropdownWhite = require("./img/dropdown-white.svg");
 import {
     ALICE_PUBLIC_ADDRESS,
     BOB_PUBLIC_ADDRESS,
-    CHARLIE_PUBLIC_ADDRESS
+    CHARLIE_PUBLIC_ADDRESS,
+    SYMBOL
 } from "./../../../../../../config";
 
 const users = [{
@@ -24,6 +27,11 @@ const users = [{
     name: "Charlie",
     account: CHARLIE_PUBLIC_ADDRESS
 }];
+
+const notificationStyle = {
+    right: "-12em",
+    width: "18em"
+};
 
 class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
     handleMouseDown = (event) => {
@@ -52,7 +60,11 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
         receiver: null,
         amount: undefined,
         sending: false,
+        sent: false,
+        hiddenNotification: false
     };
+
+    timeout: NodeJS.Timer;
 
     handleSelectAddress = (receiver) => {
         event.preventDefault();
@@ -112,6 +124,27 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                     this.state.receiver.account,
                     BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
                 );
+
+                this.setState(() => ({
+                    sent: true,
+                    hiddenNotification: false,
+                    notificationText:
+                        `${this.state.amount} ${SYMBOL} successfully sent to ${this.state.receiver.name}`
+                }), () => {
+                    clearTimeout(this.timeout);
+                    this.timeout = setTimeout(() => {
+                        this.setState(() => ({
+                            hiddenNotification: true
+                        }));
+        
+                        this.timeout = setTimeout(() => {
+                            this.setState(() => ({
+                                sent: false,
+                                hiddenNotification: false
+                            }));
+                        }, 1000);
+                    }, 3000);
+                });
             } finally {
                 this.setState({ amount: undefined, receiver: null, sending: false });
             }
@@ -160,6 +193,15 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                     disabled={this.state.sending}
                     onClick={this.handleSendTransaction}
                 />
+                {
+                                this.state.sent && (
+                                    <TooltipNotification
+                                        hidden={this.state.hiddenNotification}
+                                        text={this.state.notificationText}
+                                        style={notificationStyle}
+                                    />
+                                )
+                            }
             </div>
         );
     }

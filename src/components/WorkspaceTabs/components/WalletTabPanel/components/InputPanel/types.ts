@@ -10,6 +10,9 @@ export interface InputPanelState {
         account: String;
     };
     sending: boolean;
+    sent: boolean;
+    hiddenNotification?: boolean;
+    notificationText?: string;
 }
 
 export interface SelectAddressOption {

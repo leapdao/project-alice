@@ -10,7 +10,8 @@
 
     &-input-panel{
         display: flex;
-
+        position: relative;
+        
         &_address{
             display: flex;
             flex: 1 1;
