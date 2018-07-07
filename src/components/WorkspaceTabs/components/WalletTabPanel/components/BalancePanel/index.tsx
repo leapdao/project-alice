@@ -2,7 +2,8 @@ import * as React from "react";
 import * as copytoclipboard from "copy-to-clipboard";
 import BigNumber from "bignumber.js";
 const QRCode = require("qrcode");
-const PropTypes = require("prop-types");
+import "./style.scss";
+import { symbol, decimals } from "../../../../../../config";
 
 const copy = require("./img/copy.svg");
 const copyWhite = require("./img/copy-white.svg");
@@ -11,12 +12,6 @@ const icons = {
     ETH: require("./img/eth.svg"),
     PSC: require("./img/psc.svg")
 };
-
-const {
-    SYMBOL
-} = require("../../../../../../config");
-
-import CopiedNotification from "./components/CopiedNotification";
 
 import TooltipNotification from "../../../../../common/TooltipNotification";
 
@@ -103,15 +98,15 @@ class BalancePanel extends React.Component<any> {
             });
     }
     render() {
-        const decimals = new BigNumber(10).pow(18); // ToDo: fetch value from token contract for plasma chain
         const balance = new BigNumber(this.props.balance).div(decimals).toPrecision(2);
+
         return (
             <div className="alice-balance-panel">
                 <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
                 <div className="flex-column flex-one">
                     <div className="alice-balance-panel_balance">
-                        <img src={icons[SYMBOL]} className="alice-balance-panel_balance-icon" />
-                        <span>Balance: <strong>{balance} {SYMBOL}</strong></span>
+                        <img src={icons[symbol]} className="alice-balance-panel_balance-icon" />
+                        <span>Balance: <strong>{balance} {symbol}</strong></span>
                     </div>
                     <div className="alice-balance-panel_address">
                         <span className="alice-balance-panel_address-text">

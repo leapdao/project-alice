@@ -1,18 +1,16 @@
 import * as React from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-
-const alice = require("./img/alice.svg");
-const bob = require("./img/bob.svg");
-const charlie = require("./img/charlie.svg");
-const help = require("./img/help.svg");
+import "./style.scss";
+import { observer, inject } from "mobx-react";
 
 import { createWalletTabPanel } from "./components/WalletTabPanel";
 import HelpTabPanel from "./components/HelpTabPanel";
 import PulsaitingDot from "./components/PulsaitingDot";
 
-import "./style.scss";
-import { observer, inject } from "mobx-react";
-const PropTypes = require("prop-types");
+const alice = require("./img/alice.svg");
+const bob = require("./img/bob.svg");
+const charlie = require("./img/charlie.svg");
+const help = require("./img/help.svg");
 
 const AliceWalletTabPanel = createWalletTabPanel("alice");
 const BobWalletTabPanel = createWalletTabPanel("bob");

@@ -1,8 +1,7 @@
 import * as React from "react";
-import BalancePanel from "./components/BalancePanel";
-import TransactionsPanel from "./components/TransactionsPanel";
-import InputPanel from "./components/InputPanel";
-import getWeb3 from "../../../../getWeb3";
+import { observer, inject } from "mobx-react";
+import { Tx, helpers } from "parsec-lib";
+
 import {
     ALICE_PUBLIC_ADDRESS,
     ALICE_PRIVATE_KEY,
@@ -11,24 +10,13 @@ import {
     CHARLIE_PUBLIC_ADDRESS,
     CHARLIE_PRIVATE_KEY
 } from "./../../../../config";
-
-const keys = {
-    "alice": ALICE_PRIVATE_KEY,
-    "bob": BOB_PRIVATE_KEY,
-    "charlie": CHARLIE_PRIVATE_KEY
-};
-
-const addresses = {
-    "alice": ALICE_PUBLIC_ADDRESS,
-    "bob": BOB_PUBLIC_ADDRESS,
-    "charlie": CHARLIE_PUBLIC_ADDRESS
-};
-
-const PropTypes = require("prop-types");
+import getWeb3 from "../../../../getWeb3";
 
 import "./style.scss";
-import { observer, inject } from "mobx-react";
 import { WalletTabPanelProps } from "./types";
+import BalancePanel from "./components/BalancePanel";
+import TransactionsPanel from "./components/TransactionsPanel";
+import InputPanel from "./components/InputPanel";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
@@ -36,26 +24,23 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
     };
 
     handleSendTransaction = async (to: string, value: number) => {
+        const { store } = this.props;
         const web3 = getWeb3(false);
-        const gasPrice = await web3.eth.getGasPrice();
-        const nonce = await web3.eth.getTransactionCount(this.props.store.address, "pending");
-        const tx = {
-            to,
-            value,
-            gas: 21000,
-            nonce,
-            gasPrice,
-        };
-        const { rawTransaction } = await web3.eth.accounts.signTransaction(tx, this.props.store.privKey);
+        const unspent = await web3.getUnspent(store.address);
+        const height = await web3.eth.getBlockNumber();
+        const inputs = helpers.calcInputs(unspent, value);
+        const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value);
+        const tx = Tx.transfer(height, inputs, outputs).signAll(store.privKey);
 
         const hash = await new Promise((resolve, reject) => {
-            web3.eth.sendSignedTransaction(rawTransaction, (err, txHash) => {
+            web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {
                 if (err) {
                     reject(err);
                 } else {
-                    this.props.store.add({
-                        ...tx,
-                        from: this.props.store.address,
+                    store.add({
+                        to,
+                        value,
+                        from: store.address,
                         hash: txHash,
                         status: false,
                     });

@@ -36,7 +36,6 @@ const readBlocksInBatch = (fromBlock: number, toBlock: number): Promise<Array<an
 
 // request once for all stores
 const getBlocksRange = memoize((fromBlock: number, toBlock: number) => {
-    console.log(fromBlock, toBlock);
 
     if (false) { // parsec node doesn't support batches
         const web3 = getWeb3();
@@ -51,7 +50,7 @@ const getTransactions = async (address: string, fromBlock: number, toBlock: numb
         return [];
     }
 
-    fromBlock = Math.max(fromBlock, toBlock - 1000); // limit blocks number to 1000
+    // fromBlock = Math.max(fromBlock, toBlock - 1000); // limit blocks number to 1000
 
     const blocks = await getBlocksRange(fromBlock, toBlock);
 
@@ -75,7 +74,7 @@ const getBalance = (address: string): Promise<BigNumber> => new Promise((resolve
 });
 
 const loadStore = (address) => {
-    const store = localStorage.getItem(`psc_store_${address.substr(2, 6)}`);
+    const store = localStorage.getItem(`psc2_store_${address.substr(2, 6)}`);
     return store && JSON.parse(store) || {
         fromBlock: GENESIS_BLOCK,
         balance: 0,
@@ -98,7 +97,7 @@ class Store {
         this.privKey = privKey;
 
         try {
-            const {transactions, ...store}: any = loadStore(this.address);
+            const { transactions, ...store }: any = loadStore(this.address);
 
             assign(this, store);
 
@@ -180,7 +179,7 @@ class Store {
     }
 
     save = () => {
-        localStorage.setItem(`psc_store_${this.address.substr(2, 6)}`, JSON.stringify({
+        localStorage.setItem(`psc2_store_${this.address.substr(2, 6)}`, JSON.stringify({
             transactions: toJS(this.transactions),
             fromBlock: this.fromBlock,
             balance: this.balance

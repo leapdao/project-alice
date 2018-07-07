@@ -49,6 +49,7 @@
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.3",
     "object-assign": "4.1.1",
+    "parsec-lib": "parsec-labs/parsec-lib#08b7c303fa68152583cc4ae71ba2ce4f7a3913b8",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
     "promise": "8.0.1",
