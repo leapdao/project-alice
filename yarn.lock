@@ -6038,9 +6038,9 @@ parse5@^3.0.1:
   dependencies:
     "@types/node" "*"
 
-parsec-lib@parsec-labs/parsec-lib#08b7c303fa68152583cc4ae71ba2ce4f7a3913b8:
-  version "0.5.0"
-  resolved "https://codeload.github.com/parsec-labs/parsec-lib/tar.gz/08b7c303fa68152583cc4ae71ba2ce4f7a3913b8"
+parsec-lib@0.10.3:
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/parsec-lib/-/parsec-lib-0.10.3.tgz#02f385893c57de2be14964fa3e52b19605867085"
   dependencies:
     ethereumjs-util "^4.5.0"
     fast-equals "^1.5.0"

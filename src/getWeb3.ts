@@ -1,20 +1,18 @@
 import * as Web3 from "web3";
-import { WEB3_PROVIDER_BASE, WEB3_PROVIDER_BASE_WS } from "./config";
+import { WEB3_PROVIDER_PLASMA, WEB3_PROVIDER_ROOT } from "./config";
 import { helpers } from "parsec-lib";
 
-let web3http;
-let web3ws;
+let web3plasma;
+let web3root;
 
-export default (ws = true) => {
-  ws = ws ? WEB3_PROVIDER_BASE_WS !== WEB3_PROVIDER_BASE : false; // if supported
-
-  if (ws && !web3ws) {
-    web3ws = helpers.extendWeb3(new (Web3 as any)(WEB3_PROVIDER_BASE_WS));
+export default (root = false) => {
+  if (root && !web3root) {
+    web3root = helpers.extendWeb3(new (Web3 as any)(WEB3_PROVIDER_ROOT));
   }
 
-  if (!ws && !web3http) {
-    web3http = helpers.extendWeb3(new (Web3 as any)(WEB3_PROVIDER_BASE));
+  if (!root && !web3plasma) {
+    web3plasma = helpers.extendWeb3(new (Web3 as any)(WEB3_PROVIDER_PLASMA));
   }
 
-  return ws ? web3ws : web3http;
+  return root ? web3root : web3plasma;
 };

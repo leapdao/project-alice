@@ -179,11 +179,11 @@ class Store {
     }
 
     save = () => {
-        localStorage.setItem(`psc2_store_${this.address.substr(2, 6)}`, JSON.stringify({
-            transactions: toJS(this.transactions),
-            fromBlock: this.fromBlock,
-            balance: this.balance
-        }));
+        // localStorage.setItem(`psc2_store_${this.address.substr(2, 6)}`, JSON.stringify({
+        //     transactions: toJS(this.transactions),
+        //     fromBlock: this.fromBlock,
+        //     balance: this.balance
+        // }));
     }
 }
 
