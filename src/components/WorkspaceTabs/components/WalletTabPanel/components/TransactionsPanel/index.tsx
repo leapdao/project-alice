@@ -13,8 +13,6 @@ import Checkmark from "./../../../../../common/Checkmark";
 import Cross from "./../../../../../common/Cross";
 import { TokensContext } from "../../../../../../contexts";
 
-import { decimals } from "../../../../../../config";
-
 import { PROVIDER_ETHERSCAN_BASE, TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
 
 const getStatus = (original) => {
@@ -86,8 +84,13 @@ const getName = (addresses, address) => {
     return address;
 };
 
-const getFee = (tx) => tx.gasPrice && new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber() || null;
-const getGasPrice = (tx) => tx.gasPrice && new BigNumber(tx.gasPrice).div(decimals).toNumber() || null;
+const getFee = (tx, token) => (
+    tx.gasPrice &&
+    new BigNumber(tx.gasPrice)
+        .times(tx.gas)
+        .div(10 ** token.decimals).toNumber() ||
+    null
+);
 
 const TxTr = observer(({ tx, addresses }) => {
     return (
@@ -113,7 +116,7 @@ const TxTr = observer(({ tx, addresses }) => {
                             {" "}
                             {token.symbol}
                         </td>
-                        <td className="tx-td">{getFee(tx)}</td>
+                        <td className="tx-td">{getFee(tx, token)}</td>
                         <td className="tx-td"><TxStatus tx={tx} /></td>
                     </tr>
                 );
@@ -129,9 +132,9 @@ class TransactionsPanel extends React.Component<any> {
     };
 
     handlePageChange = (page) => {
-        this.setState((state) => ({
+        this.setState({
             page: page.selected
-        }));
+        });
     }
 
     render() {

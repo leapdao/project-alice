@@ -17,6 +17,7 @@ import { WalletTabPanelProps } from "./types";
 import BalancePanel from "./components/BalancePanel";
 import TransactionsPanel from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
+import { TokensContext } from "../../../../contexts";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
@@ -57,12 +58,22 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         return (
             <div className="alice-tab-panel">
                 <BalancePanel balance={store.balance} address={store.address} />
-                <InputPanel balance={store.balance} onSend={this.handleSendTransaction} address={store.address}/>
+                <TokensContext.Consumer>
+                    {({ selected }: any) => (
+                        <InputPanel
+                            selectedToken={selected}
+                            balance={store.balance}
+                            onSend={this.handleSendTransaction}
+                            address={store.address}
+                        />
+                    )}
+                </TokensContext.Consumer>
                 <hr className="alice-panel-separ" />
                 <TransactionsPanel
                     loading={store.loading}
                     transactions={store.transactions}
                     lastBlock={store.fromBlock}
+
                     addresses={Object.keys(stores).reduce((o, key) => ({
                         ...o,
                         [stores[key].address.toLowerCase()]: key,
