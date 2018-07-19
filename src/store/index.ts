@@ -139,10 +139,8 @@ class Store {
     @action
     getBalance = async (address) => {
         try {
-
             const balance = await this.token.methods.balanceOf(address).call();
             assign(this, {balance: new BigNumber(balance).toNumber()});
-
         } catch (err) {
             console.error(err.message);
         }

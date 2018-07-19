@@ -31,6 +31,8 @@ import { Token } from "./components/WorkspaceTabs/components/WalletTabPanel/type
 import { TokensContext } from "./contexts";
 export default class App extends React.PureComponent {
 
+  store: any = {};
+
   state = {
     ready: false,
     tokens: [],
@@ -71,6 +73,36 @@ export default class App extends React.PureComponent {
       };
     }));
 
+
+    const token = (tokens[0] as any).token;
+    const color = findIndex(this.state.tokens, (t) => (
+      t.token.options.address === token.options.address
+    ));
+
+    this.store = {
+      alice: new Store({
+          token,
+          tcs: tokens.map(({token}) => token),
+          color,
+          address: ALICE_PUBLIC_ADDRESS,
+          key: ALICE_PRIVATE_KEY
+      }),
+      bob: new Store({
+          token,
+          tcs: tokens.map(({token}) => token),
+          color,
+          address: BOB_PUBLIC_ADDRESS,
+          key: BOB_PRIVATE_KEY
+      }),
+      charlie: new Store({
+          token,
+          tcs: tokens.map(({token}) => token),
+          color,
+          address: CHARLIE_PUBLIC_ADDRESS,
+          key: CHARLIE_PRIVATE_KEY
+      }),
+    };
+
     this.setState(() => ({
       tokens: tokens,
       selected: tokens[0],
@@ -79,11 +111,20 @@ export default class App extends React.PureComponent {
     }));
   }
 
-  onChangeToken = (token: Token) => {
-    this.setState(() => ({
-      selected: token
-    }));
-  }
+    onChangeToken = (token: Token) => {
+        const color = findIndex(this.state.tokens, (t) => (
+            t.token.options.address === token.token.options.address
+        ));
+        this.store.alice.color = color;
+        this.store.bob.color = color;
+        this.store.charlie.color = color;
+        this.store.alice.token = token.token;
+        this.store.bob.token = token.token;
+        this.store.charlie.token = token.token;
+        this.setState(() => ({
+            selected: token
+        }));
+    }
 
   render() {
     if (this.state.ready) {
@@ -92,41 +133,17 @@ export default class App extends React.PureComponent {
         t.token.options.address === token.options.address
       ));
 
-      const store = {
-        alice: new Store({
-          token,
-          tcs: this.state.tcs,
-          color,
-          address: ALICE_PUBLIC_ADDRESS,
-          key: ALICE_PRIVATE_KEY
-        }),
-        bob: new Store({
-          token,
-          tcs: this.state.tcs,
-          color,
-          address: BOB_PUBLIC_ADDRESS,
-          key: BOB_PRIVATE_KEY
-        }),
-        charlie: new Store({
-          token,
-          tcs: this.state.tcs,
-          color,
-          address: CHARLIE_PUBLIC_ADDRESS,
-          key: CHARLIE_PRIVATE_KEY
-        }),
-      };
+        const context = {
+            tokens: this.state.tokens,
+            changeToken: this.onChangeToken,
+            selected: this.state.selected,
+            color
+        };
 
-      const context = {
-        tokens: this.state.tokens,
-        changeToken: this.onChangeToken,
-        selected: this.state.selected,
-        color
-      };
-
-      return (
+        return (
         <div className="container">
           <Header />
-          <Provider {...store}>
+          <Provider {...this.store}>
             <TokensContext.Provider value={context}>
               <WorkspaceTabs />
             </TokensContext.Provider>
