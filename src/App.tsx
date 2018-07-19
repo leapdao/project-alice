@@ -73,11 +73,8 @@ export default class App extends React.PureComponent {
       };
     }));
 
-
-    const token = (tokens[0] as any).token;
-    const color = findIndex(this.state.tokens, (t) => (
-      t.token.options.address === token.options.address
-    ));
+    const color = 0;
+    const token = (tokens[color] as any).token;
 
     this.store = {
       alice: new Store({
@@ -105,9 +102,9 @@ export default class App extends React.PureComponent {
 
     this.setState(() => ({
       tokens: tokens,
-      selected: tokens[0],
+      selected: tokens[color],
       ready: true,
-      tcs: tokens.map(({token}) => token)
+      tcs: tokens.map(({token}) => token),
     }));
   }
 
