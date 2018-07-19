@@ -27,11 +27,8 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const { store } = this.props;
         const web3 = getWeb3();
         const unspent = await web3.getUnspent(store.address);
-        console.log(unspent, store.address, value, store);
         const inputs = helpers.calcInputs(unspent, store.address, value, store.color);
-        console.log(inputs);
         const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value, store.color);
-        console.log(outputs);
         const tx = Tx.transfer(inputs, outputs).signAll(store.privKey);
 
         const hash = await new Promise((resolve, reject) => {
@@ -45,6 +42,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
                         from: store.address,
                         hash: txHash,
                         status: false,
+                        raw: tx.toRaw(),
                     });
                     resolve(txHash);
                 }
