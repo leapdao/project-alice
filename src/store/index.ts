@@ -77,17 +77,21 @@ class Store {
     @observable address: string;
     @observable privKey: string;
     @observable balance: number;
+    @observable balances: Array<number>;
     @observable loading: boolean;
 
     color: number;
     token: Contract;
+    tcs: Array<Contract> = [];
 
     // ToDo: pass privKey only. Address can be derrived from private key
-    constructor({address, key, token, color}: {address: string, key: string, token: Contract, color: number}) {
+    constructor({address, key, token, tcs, color}:
+        {address: string, key: string, token: Contract, tcs: Array<Contract>, color: number}) {
         this.address = address;
         this.privKey = key;
         this.token = token;
         this.color = color;
+        this.tcs = tcs;
 
         try {
             const { transactions, ...store }: any = loadStore(this.address);
@@ -103,7 +107,8 @@ class Store {
             }
 
             this.getBalance(address);
-
+            this.getBalances(address);
+            
             this.load(address, this.fromBlock);
 
         } catch (error) {
@@ -144,6 +149,21 @@ class Store {
     }
 
     @action
+    getBalances = async (address) => {
+        try {
+
+            const balances = await Promise.all(this.tcs.map( (tc) => {
+                return tc.methods.balanceOf(address).call();
+            } ));
+            
+            assign(this, {balances: balances.map(b => new BigNumber(b).toNumber())});
+
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
+    @action
     load = async (address: string, fromBlock: number = GENESIS_BLOCK) => {
         const web3 = getWeb3();
         // start from 0 for plasma chain
@@ -156,6 +176,7 @@ class Store {
             if (size(transactions) > 0) {
                 map(transactions, this.add.bind(this));
                 this.getBalance(address);
+                this.getBalances(address);
             }
             this.fromBlock = blockNumber;
 

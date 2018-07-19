@@ -34,7 +34,8 @@ export default class App extends React.PureComponent {
   state = {
     ready: false,
     tokens: [],
-    selected: null
+    selected: null,
+    tcs: []
   };
 
   constructor(props: any) {
@@ -73,7 +74,8 @@ export default class App extends React.PureComponent {
     this.setState(() => ({
       tokens: tokens,
       selected: tokens[0],
-      ready: true
+      ready: true,
+      tcs: tokens.map(({token}) => token)
     }));
   }
 
@@ -93,29 +95,39 @@ export default class App extends React.PureComponent {
       const store = {
         alice: new Store({
           token,
+          tcs: this.state.tcs,
           color,
           address: ALICE_PUBLIC_ADDRESS,
           key: ALICE_PRIVATE_KEY
         }),
         bob: new Store({
           token,
+          tcs: this.state.tcs,
           color,
           address: BOB_PUBLIC_ADDRESS,
           key: BOB_PRIVATE_KEY
         }),
         charlie: new Store({
           token,
+          tcs: this.state.tcs,
           color,
           address: CHARLIE_PUBLIC_ADDRESS,
           key: CHARLIE_PRIVATE_KEY
         }),
       };
 
+      const context = {
+        tokens: this.state.tokens,
+        changeToken: this.onChangeToken,
+        selected: this.state.selected,
+        color
+      };
+
       return (
         <div className="container">
           <Header />
           <Provider {...store}>
-            <TokensContext.Provider value={{tokens: this.state.tokens, changeToken: this.onChangeToken, selected: this.state.selected}}>
+            <TokensContext.Provider value={context}>
               <WorkspaceTabs />
             </TokensContext.Provider>
           </Provider>

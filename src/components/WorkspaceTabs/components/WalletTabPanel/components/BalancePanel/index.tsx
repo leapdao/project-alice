@@ -21,6 +21,7 @@ import { TokensContext } from "../../../../../../contexts";
 
 import "./style.scss";
 import { Token } from "../../types";
+import { observer } from "mobx-react";
 
 class CopyButton extends React.PureComponent<any> {
     state = {
@@ -80,6 +81,7 @@ const addresses = {
     [CHARLIE_PUBLIC_ADDRESS]: 2
 };
 
+@observer
 class BalancePanel extends React.Component<any> {
 
     static defaultProps = {
@@ -120,11 +122,12 @@ class BalancePanel extends React.Component<any> {
                 <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
                 <div className="flex-column flex-one">
                     <TokensContext.Consumer>
-                        {({ selected, tokens, changeToken }: any) => (
+                        {({ selected, tokens, changeToken, color }: any) => (
                             <SelectToken
-                                balance={this.props.balance}
+                                balances={this.props.balances}
                                 tokens={tokens.map(this.filterBalance)}
                                 onChange={changeToken}
+                                color={color}
                                 selected={this.filterBalance(selected)}
                             />
                         )}

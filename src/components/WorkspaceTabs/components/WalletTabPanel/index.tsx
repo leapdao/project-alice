@@ -54,9 +54,10 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
 
     render() {
         const { store, stores } = this.props;
+
         return (
             <div className="alice-tab-panel">
-                <BalancePanel balance={store.balance} address={store.address} />
+                <BalancePanel balance={store.balance} address={store.address} balances={store.balances}/>
                 <InputPanel balance={store.balance} onSend={this.handleSendTransaction} address={store.address}/>
                 <hr className="alice-panel-separ" />
                 <TransactionsPanel
