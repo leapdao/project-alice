@@ -86,7 +86,9 @@ export default class App extends React.PureComponent {
   render() {
     if (this.state.ready) {
       const token = this.state.selected.token;
-      const color = findIndex(this.state.tokens, token);
+      const color = findIndex(this.state.tokens, (t) => (
+        t.token.options.address === token.options.address
+      ));
 
       const store = {
         alice: new Store({

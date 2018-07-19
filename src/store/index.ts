@@ -78,15 +78,16 @@ class Store {
     @observable privKey: string;
     @observable balance: number;
     @observable loading: boolean;
-    
-    colour: number;
+
+    color: number;
     token: Contract;
 
     // ToDo: pass privKey only. Address can be derrived from private key
-    constructor({address, key, token}: {address: string, key: string, token: Contract, color: number}) {
+    constructor({address, key, token, color}: {address: string, key: string, token: Contract, color: number}) {
         this.address = address;
         this.privKey = key;
         this.token = token;
+        this.color = color;
 
         try {
             const { transactions, ...store }: any = loadStore(this.address);
