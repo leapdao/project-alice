@@ -64,7 +64,7 @@ export default class App extends React.PureComponent {
 
       return {
         symbol,
-        decimals,
+        decimals: decimals,
         balances,
         token
       };

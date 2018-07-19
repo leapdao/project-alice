@@ -5,7 +5,6 @@ const QRCode = require("qrcode");
 
 import "./style.scss";
 import {
-    decimals,
     ALICE_PUBLIC_ADDRESS,
     BOB_PUBLIC_ADDRESS,
     CHARLIE_PUBLIC_ADDRESS
@@ -112,12 +111,10 @@ class BalancePanel extends React.Component<any> {
 
     filterBalance = (token): any => ({
         ...token,
-        balance: new BigNumber(token.balances[addresses[this.props.address]]).div(decimals).toPrecision(2)
+        balance: token.balances[addresses[this.props.address]]
     })
 
     render() {
-        // const balance = 
-
         return (
             <div className="alice-balance-panel">
                 <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
@@ -125,6 +122,7 @@ class BalancePanel extends React.Component<any> {
                     <TokensContext.Consumer>
                         {({ selected, tokens, changeToken }: any) => (
                             <SelectToken
+                                balance={this.props.balance}
                                 tokens={tokens.map(this.filterBalance)}
                                 onChange={changeToken}
                                 selected={this.filterBalance(selected)}
