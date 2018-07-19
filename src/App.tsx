@@ -112,6 +112,9 @@ export default class App extends React.PureComponent {
     this.store.alice.color = color;
     this.store.bob.color = color;
     this.store.charlie.color = color;
+    this.store.alice.token = token.token;
+    this.store.bob.token = token.token;
+    this.store.charlie.token = token.token;
     this.setState(() => ({
       selected: token
     }));
