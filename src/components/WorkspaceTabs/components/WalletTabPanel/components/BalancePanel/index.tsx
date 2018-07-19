@@ -5,7 +5,6 @@ const QRCode = require("qrcode");
 
 import "./style.scss";
 import {
-    symbol,
     decimals,
     ALICE_PUBLIC_ADDRESS,
     BOB_PUBLIC_ADDRESS,
@@ -14,11 +13,6 @@ import {
 
 const copy = require("./img/copy.svg");
 const copyWhite = require("./img/copy-white.svg");
-
-const icons = {
-    ETH: require("./img/eth.svg"),
-    PSC: require("./img/psc.svg")
-};
 
 import SelectToken from "./components/SelectToken";
 

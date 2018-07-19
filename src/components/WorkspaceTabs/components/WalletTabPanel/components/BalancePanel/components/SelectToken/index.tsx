@@ -3,7 +3,6 @@ import Select, { OptionComponentProps, OptionValues } from "react-select";
 
 import "./style.scss";
 import { Token } from "../../../../types";
-import { ALICE_PUBLIC_ADDRESS, BOB_PUBLIC_ADDRESS, CHARLIE_PUBLIC_ADDRESS } from "../../../../../../../../config";
 
 const dropdown = require("./img/dropdown.svg");
 const dropdownWhite = require("./img/dropdown-white.svg");
@@ -30,7 +29,7 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
         const { option } = this.props;
         return (
             <div className="alice-balance-panel_balance" onMouseDown={this.handleMouseDown}>
-                <img src={option.icon} className="alice-balance-panel_balance-icon" />
+                <img src={require(`./icons/${option.symbol}.svg`)} className="alice-balance-panel_balance-icon" />
                 <span>Balance: <strong>{option.balance} {option.symbol}</strong></span>
             </div>
         );
@@ -45,7 +44,7 @@ export default class SelectToken extends React.PureComponent<SelectTokenProps, S
 
     valueRenderer = (token) => (
         <div className="alice-balance-panel_balance">
-            <img src={token.icon} className="alice-balance-panel_balance-icon" />
+            <img src={require(`./icons/${token.symbol}.svg`)} className="alice-balance-panel_balance-icon" />
             <span>Balance: <strong>{token.balance} {token.symbol}</strong></span>
         </div>
     )
