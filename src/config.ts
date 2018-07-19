@@ -15,3 +15,5 @@ export const PROVIDER_ETHERSCAN_BASE = "http://rinkeby.etherscan.io" as string;
 export const TRANSACTIONS_PAGE_SIZE = 15;
 export const symbol = "PSC";
 export const decimals = new BigNumber(10).pow(9);
+
+export const TOKEN_CONTRACT_ADDRESS = "0x258daf43d711831b8fd59137f42030784293e9e6";

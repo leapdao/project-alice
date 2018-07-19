@@ -28,10 +28,9 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const web3 = getWeb3();
         const unspent = await web3.getUnspent(store.address);
         console.log(unspent);
-        const height = await web3.eth.getBlockNumber();
-        const inputs = helpers.calcInputs(unspent, value);
-        const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value);
-        const tx = Tx.transfer(height, inputs, outputs).signAll(store.privKey);
+        const inputs = helpers.calcInputs(unspent, store.address, value, store.colour);
+        const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value, store.colour);
+        const tx = Tx.transfer(inputs, outputs).signAll(store.privKey);
 
         const hash = await new Promise((resolve, reject) => {
             web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {

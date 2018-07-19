@@ -3,9 +3,8 @@ import TransactionModel from "./Transaction";
 import getWeb3 from "../getWeb3";
 import { size, findIndex, map, assign, memoize } from "lodash";
 import BigNumber from "bignumber.js";
-import { Transaction, TransactionReceipt } from "web3/types";
+import { Transaction, TransactionReceipt, Contract } from "web3/types";
 import { GENESIS_BLOCK } from "../config";
-import Web3 from "web3";
 
 const range = (from: number, to: number) => Array.from(new Array(to - from), (_, i) => i + from);
 
@@ -62,17 +61,6 @@ const getTransactions = async (address: string, fromBlock: number, toBlock: numb
     return transactions;
 };
 
-const getBalance = (address: string): Promise<BigNumber> => new Promise((resolve, reject) => {
-    const web3 = getWeb3();
-    web3.eth.getBalance(address, (err: Error, balance: BigNumber) => {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(balance);
-        }
-    });
-});
-
 const loadStore = (address) => {
     const store = localStorage.getItem(`psc2_store_${address.substr(2, 6)}`);
     return store && JSON.parse(store) || {
@@ -90,11 +78,15 @@ class Store {
     @observable privKey: string;
     @observable balance: number;
     @observable loading: boolean;
+    
+    colour: number;
+    token: Contract;
 
     // ToDo: pass privKey only. Address can be derrived from private key
-    constructor(address: string, privKey: string) {
+    constructor({address, key, token}: {address: string, key: string, token: Contract, color: number}) {
         this.address = address;
-        this.privKey = privKey;
+        this.privKey = key;
+        this.token = token;
 
         try {
             const { transactions, ...store }: any = loadStore(this.address);
@@ -141,7 +133,8 @@ class Store {
     @action
     getBalance = async (address) => {
         try {
-            const balance = await getBalance(address);
+
+            const balance = await this.token.methods.balanceOf(address).call();
             assign(this, {balance: new BigNumber(balance).toNumber()});
 
         } catch (err) {
