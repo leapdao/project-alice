@@ -122,7 +122,7 @@ class BalancePanel extends React.Component<any> {
                     <TokensContext.Consumer>
                         {({ selected, tokens, changeToken }: any) => (
                             <SelectToken
-                                balance={this.props.balance}
+                                balance={selected.balances[addresses[this.props.address]]}
                                 tokens={tokens.map(this.filterBalance)}
                                 onChange={changeToken}
                                 selected={this.filterBalance(selected)}

@@ -14,7 +14,6 @@ import {
     ALICE_PUBLIC_ADDRESS,
     BOB_PUBLIC_ADDRESS,
     CHARLIE_PUBLIC_ADDRESS,
-    symbol
 } from "./../../../../../../config";
 
 const users = [{
