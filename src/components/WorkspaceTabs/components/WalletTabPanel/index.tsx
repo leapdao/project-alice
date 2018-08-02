@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react";
-import { Tx, helpers } from "parsec-lib";
+import { Tx, helpers, Output } from "parsec-lib";
 
 import {
     ALICE_PUBLIC_ADDRESS,
@@ -18,11 +18,26 @@ import BalancePanel from "./components/BalancePanel";
 import TransactionsPanel from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
 import { TokensContext } from "../../../../contexts";
+import BigNumber from "bignumber.js";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
         store: {}
     };
+
+    consolidateAddress = async () => {
+        const { store } = this.props;
+        const web3 = getWeb3();
+
+        const balance = new BigNumber(await store.tcs[store.color].methods.balanceOf(store.address).call()).toNumber();
+        const unspent = await web3.getUnspent(store.address);
+
+        const inputs = helpers.calcInputs(unspent, store.address, balance, store.color);
+        const output = new Output(balance, store.address, store.color);
+
+        const tx = Tx.consolidate(inputs, output);
+        web3.eth.sendSignedTransaction(tx.toRaw());
+    }
 
     handleSendTransaction = async (to: string, value: number) => {
         const { store } = this.props;
@@ -47,7 +62,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
                     });
                     resolve(txHash);
                 }
-            });
+            }).once("receipt", this.consolidateAddress);
         });
 
         return hash;
@@ -58,7 +73,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
 
         return (
             <div className="alice-tab-panel">
-                <BalancePanel balance={store.balance} address={store.address} balances={store.balances}/>
+                <BalancePanel balance={store.balance} address={store.address} balances={store.balances} />
                 <TokensContext.Consumer>
                     {({ selected }: any) => (
                         <InputPanel
