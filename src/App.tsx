@@ -1,7 +1,6 @@
 require("dotenv").config({ path: ".env" });
 import * as React from "react";
 import { Provider } from "mobx-react";
-import { Contract } from "web3/types";
 import { findIndex } from "lodash";
 
 import "react-table/react-table.css";
