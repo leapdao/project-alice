@@ -29,14 +29,18 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const { store } = this.props;
         const web3 = getWeb3();
 
-        const balance = new BigNumber(await store.tcs[store.color].methods.balanceOf(store.address).call()).toNumber();
         const unspent = await web3.getUnspent(store.address);
 
-        const inputs = helpers.calcInputs(unspent, store.address, balance, store.color);
-        const output = new Output(balance, store.address, store.color);
+        if (unspent.length > 1) {
+            const balance = await store.tcs[store.color].methods.balanceOf(store.address).call();
+            const balanceNumber = new BigNumber(balance).toNumber();
 
-        const tx = Tx.consolidate(inputs, output);
-        web3.eth.sendSignedTransaction(tx.toRaw());
+            const inputs = helpers.calcInputs(unspent, store.address, balanceNumber, store.color);
+            const output = new Output(balanceNumber, store.address, store.color);
+    
+            const tx = Tx.consolidate(inputs, output);
+            web3.eth.sendSignedTransaction(tx.toRaw());
+        } 
     }
 
     handleSendTransaction = async (to: string, value: number) => {
