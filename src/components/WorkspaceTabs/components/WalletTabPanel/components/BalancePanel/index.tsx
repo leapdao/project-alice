@@ -2,20 +2,26 @@ import * as React from "react";
 import * as copytoclipboard from "copy-to-clipboard";
 import BigNumber from "bignumber.js";
 const QRCode = require("qrcode");
+
 import "./style.scss";
-import { symbol, decimals } from "../../../../../../config";
+import {
+    ALICE_PUBLIC_ADDRESS,
+    BOB_PUBLIC_ADDRESS,
+    CHARLIE_PUBLIC_ADDRESS
+} from "../../../../../../config";
 
 const copy = require("./img/copy.svg");
 const copyWhite = require("./img/copy-white.svg");
 
-const icons = {
-    ETH: require("./img/eth.svg"),
-    PSC: require("./img/psc.svg")
-};
+import SelectToken from "./components/SelectToken";
 
 import TooltipNotification from "../../../../../common/TooltipNotification";
 
+import { TokensContext } from "../../../../../../contexts";
+
 import "./style.scss";
+import { Token } from "../../types";
+import { observer } from "mobx-react";
 
 class CopyButton extends React.PureComponent<any> {
     state = {
@@ -26,7 +32,7 @@ class CopyButton extends React.PureComponent<any> {
     timeout: NodeJS.Timer;
 
     handleCopy = () => {
-        const {onClick} = this.props;
+        const { onClick } = this.props;
 
         if (typeof onClick === "function") {
             onClick();
@@ -55,20 +61,27 @@ class CopyButton extends React.PureComponent<any> {
     render() {
         return (
             <div className="alice-balance-panel_address-copy_button">
-                            <button onClick={this.handleCopy}>
-                                <img src={copy} className="alice-balance-panel_address-copy_button_icon" />
-                                <img src={copyWhite} className="alice-balance-panel_address-copy_button_icon-white" />
-                            </button>
-                            {
-                                this.state.copied && (
-                                    <TooltipNotification hidden={this.state.hidden} text="Address copied to clipboard"/>
-                                )
-                            }
-                        </div>
+                <button onClick={this.handleCopy}>
+                    <img src={copy} className="alice-balance-panel_address-copy_button_icon" />
+                    <img src={copyWhite} className="alice-balance-panel_address-copy_button_icon-white" />
+                </button>
+                {
+                    this.state.copied && (
+                        <TooltipNotification hidden={this.state.hidden} text="Address copied to clipboard" />
+                    )
+                }
+            </div>
         );
     }
 }
 
+const addresses = {
+    [ALICE_PUBLIC_ADDRESS]: 0,
+    [BOB_PUBLIC_ADDRESS]: 1,
+    [CHARLIE_PUBLIC_ADDRESS]: 2
+};
+
+@observer
 class BalancePanel extends React.Component<any> {
 
     static defaultProps = {
@@ -97,22 +110,33 @@ class BalancePanel extends React.Component<any> {
                 }
             });
     }
-    render() {
-        const balance = new BigNumber(this.props.balance).div(decimals).toPrecision(2);
 
+    filterBalance = (token): any => ({
+        ...token,
+        balance: token.balances[addresses[this.props.address]]
+    })
+
+    render() {
         return (
             <div className="alice-balance-panel">
                 <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
                 <div className="flex-column flex-one">
-                    <div className="alice-balance-panel_balance">
-                        <img src={icons[symbol]} className="alice-balance-panel_balance-icon" />
-                        <span>Balance: <strong>{balance} {symbol}</strong></span>
-                    </div>
+                    <TokensContext.Consumer>
+                        {({ selected, tokens, changeToken, color }: any) => (
+                            <SelectToken
+                                balances={this.props.balances}
+                                tokens={tokens.map(this.filterBalance)}
+                                onChange={changeToken}
+                                color={color}
+                                selected={this.filterBalance(selected)}
+                            />
+                        )}
+                    </TokensContext.Consumer>
                     <div className="alice-balance-panel_address">
                         <span className="alice-balance-panel_address-text">
                             Address: <strong className="white">{this.props.address}</strong>
                         </span>
-                        <CopyButton onClick={copytoclipboard.bind(this, this.props.address)}/>
+                        <CopyButton onClick={copytoclipboard.bind(this, this.props.address)} />
                     </div>
                 </div>
             </div>

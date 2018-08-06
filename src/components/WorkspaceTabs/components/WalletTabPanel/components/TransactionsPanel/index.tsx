@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { sortBy } from "lodash";
+import { Tx } from "parsec-lib";
 import BigNumber from "bignumber.js";
 
 import "./style.scss";
@@ -10,8 +11,7 @@ const ReactPaginate = require("react-paginate");
 import Pending from "./../../../../../common/Pending";
 import Checkmark from "./../../../../../common/Checkmark";
 import Cross from "./../../../../../common/Cross";
-
-import { decimals } from "../../../../../../config";
+import { TokensContext } from "../../../../../../contexts";
 
 import { PROVIDER_ETHERSCAN_BASE, TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
 
@@ -84,45 +84,44 @@ const getName = (addresses, address) => {
     return address;
 };
 
-const getFee = (tx) => tx.gasPrice && new BigNumber(tx.gasPrice).times(tx.gas).div(decimals).toNumber() || null;
-const getGasPrice = (tx) => tx.gasPrice && new BigNumber(tx.gasPrice).div(decimals).toNumber() || null;
+const getFee = (tx, token) => (
+    tx.gasPrice &&
+    new BigNumber(tx.gasPrice)
+        .times(tx.gas)
+        .div(10 ** token.decimals).toNumber() ||
+    null
+);
 
 const TxTr = observer(({ tx, addresses }) => {
     return (
-        <tr className={`tx-tr ${getStatus(tx)}`}>
-            <td className="tx-td tx-td_hash">
-                <a
-                    className="alice-transactions-list_item-hash"
-                    href={`${PROVIDER_ETHERSCAN_BASE}/tx/${tx.transactionHash}`}
-                    target="_blank"
-                >
-                    {tx.transactionHash.substr(2, 6)}
-                </a>
-            </td>
-            <td className="tx-td tx-td_from">
-                <a
-                    className="alice-transactions-list_item-from"
-                    href={`${PROVIDER_ETHERSCAN_BASE}/address/${tx.from}`}
-                    target="_blank"
-                >
-                    {getName(addresses, tx.from)}
-                </a>
-            </td>
-            <td className="tx-td tx-td_to">
-                <a
-                    className="alice-transactions-list_item-to"
-                    href={`${PROVIDER_ETHERSCAN_BASE}/address/${tx.to}`}
-                    target="_blank"
-                >
-                    {getName(addresses, tx.to)}
-                </a>
-            </td>
-            <td className="tx-td">{new BigNumber(tx.value).div(decimals).toNumber()}</td>
-            <td className="tx-td">{tx.gas}</td>
-            <td className="tx-td">{getGasPrice(tx)}</td>
-            <td className="tx-td">{getFee(tx)}</td>
-            <td className="tx-td"><TxStatus tx={tx} /></td>
-        </tr>
+        <TokensContext.Consumer>
+            {({ tokens }: any) => {
+                const txObject = Tx.fromRaw(tx.raw);
+                const color = txObject.outputs[0] ? txObject.outputs[0].color : 0;
+                const token = tokens[color];
+                return txObject && token && (
+                    <tr className={`tx-tr ${getStatus(tx)}`}>
+                        <td className="tx-td tx-td_hash">
+
+                            {tx.transactionHash.substr(2, 6)}
+                        </td>
+                        <td className="tx-td tx-td_from">
+                           {getName(addresses, tx.from)}
+                        </td>
+                        <td className="tx-td tx-td_to">
+                            {getName(addresses, tx.to)}
+                        </td>
+                        <td className="tx-td">
+                            {new BigNumber(tx.value).div(10 ** token.decimals).toNumber()}
+                            {" "}
+                            {token.symbol}
+                        </td>
+                        <td className="tx-td">{getFee(tx, token)}</td>
+                        <td className="tx-td"><TxStatus tx={tx} /></td>
+                    </tr>
+                );
+            }}
+        </TokensContext.Consumer>
     );
 });
 
@@ -133,9 +132,9 @@ class TransactionsPanel extends React.Component<any> {
     };
 
     handlePageChange = (page) => {
-        this.setState((state) => ({
+        this.setState({
             page: page.selected
-        }));
+        });
     }
 
     render() {
@@ -152,8 +151,6 @@ class TransactionsPanel extends React.Component<any> {
                             <th className="tx-th">FROM</th>
                             <th className="tx-th">TO</th>
                             <th className="tx-th">VALUE</th>
-                            <th className="tx-th">GAS</th>
-                            <th className="tx-th">GAS PRICE</th>
                             <th className="tx-th">FEE</th>
                             <th className="tx-th" />
                         </tr>

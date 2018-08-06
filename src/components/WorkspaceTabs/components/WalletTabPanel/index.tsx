@@ -1,6 +1,6 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react";
-import { Tx, helpers } from "parsec-lib";
+import { Tx, helpers, Output } from "parsec-lib";
 
 import {
     ALICE_PUBLIC_ADDRESS,
@@ -17,21 +17,39 @@ import { WalletTabPanelProps } from "./types";
 import BalancePanel from "./components/BalancePanel";
 import TransactionsPanel from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
+import { TokensContext } from "../../../../contexts";
+import BigNumber from "bignumber.js";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
         store: {}
     };
 
+    consolidateAddress = async () => {
+        const { store } = this.props;
+        const web3 = getWeb3();
+
+        const unspent = await web3.getUnspent(store.address);
+
+        if (unspent.length > 1) {
+            const balance = await store.tcs[store.color].methods.balanceOf(store.address).call();
+            const balanceNumber = new BigNumber(balance).toNumber();
+
+            const inputs = helpers.calcInputs(unspent, store.address, balanceNumber, store.color);
+            const output = new Output(balanceNumber, store.address, store.color);
+    
+            const tx = Tx.consolidate(inputs, output);
+            web3.eth.sendSignedTransaction(tx.toRaw());
+        } 
+    }
+
     handleSendTransaction = async (to: string, value: number) => {
         const { store } = this.props;
         const web3 = getWeb3();
         const unspent = await web3.getUnspent(store.address);
-        console.log(unspent);
-        const height = await web3.eth.getBlockNumber();
-        const inputs = helpers.calcInputs(unspent, value);
-        const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value);
-        const tx = Tx.transfer(height, inputs, outputs).signAll(store.privKey);
+        const inputs = helpers.calcInputs(unspent, store.address, value, store.color);
+        const outputs = helpers.calcOutputs(unspent, inputs, store.address, to, value, store.color);
+        const tx = Tx.transfer(inputs, outputs).signAll(store.privKey);
 
         const hash = await new Promise((resolve, reject) => {
             web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {
@@ -44,10 +62,11 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
                         from: store.address,
                         hash: txHash,
                         status: false,
+                        raw: tx.toRaw(),
                     });
                     resolve(txHash);
                 }
-            });
+            }).once("receipt", this.consolidateAddress);
         });
 
         return hash;
@@ -55,15 +74,26 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
 
     render() {
         const { store, stores } = this.props;
+
         return (
             <div className="alice-tab-panel">
-                <BalancePanel balance={store.balance} address={store.address} />
-                <InputPanel balance={store.balance} onSend={this.handleSendTransaction} address={store.address}/>
+                <BalancePanel balance={store.balance} address={store.address} balances={store.balances} />
+                <TokensContext.Consumer>
+                    {({ selected }: any) => (
+                        <InputPanel
+                            selectedToken={selected}
+                            balance={store.balance}
+                            onSend={this.handleSendTransaction}
+                            address={store.address}
+                        />
+                    )}
+                </TokensContext.Consumer>
                 <hr className="alice-panel-separ" />
                 <TransactionsPanel
                     loading={store.loading}
                     transactions={store.transactions}
                     lastBlock={store.fromBlock}
+
                     addresses={Object.keys(stores).reduce((o, key) => ({
                         ...o,
                         [stores[key].address.toLowerCase()]: key,

@@ -60,7 +60,7 @@ const AliceWalletTab = inject((store: any) => ({ store: store.alice }))(observer
 const BobWalletTab = inject((store: any) => ({ store: store.bob }))(observer(WalletTab));
 const CharlieWalletTab = inject((store: any) => ({ store: store.charlie }))(observer(WalletTab));
 
-class WorkspaceTabs extends React.Component<any> {
+class WorkspaceTabs extends React.Component<WorkspaceTabsProps> {
     state = {
         active: 0
     };

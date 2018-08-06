@@ -6,7 +6,7 @@
             font-weight: normal;
             font-size: 1.6em;
         }
-    
+
         .tx-table {
             border: none;
             -webkit-border-horizontal-spacing: 0px;
@@ -16,7 +16,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            
+
 
             .tx-thead {
                 color: rgba(255, 255, 255, 0.35);
@@ -37,17 +37,12 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
 
-                &_hash,
-                &_from,
-                &_to {
-                    color: #44b6fe;
-                }
                 &_hash a,
                 &_from a,
                 &_to a{
                     color: #44b6fe;
                     text-decoration: none;
-                    
+
                     &:hover {
                         color: #FFFFFF;
                         text-decoration: underline;
@@ -64,7 +59,7 @@
                 position: relative;
                 text-align: center;
             }
-            
+
             .tx-tbody{
                 .tx-tr{
                     margin-top: 0.3em;
@@ -72,7 +67,7 @@
                     height: 3.5em;
                     background-color: rgba(255,255,255,0.1);
                     border-radius: 0.8em;
-            
+
                     .tx-td{
                         align-self: center;
 
@@ -82,17 +77,17 @@
                             text-align: center;
                         }
                     }
-            
+
                     &.success{
                         background-color: rgba(20, 217, 0, 0.1);
                         border: solid 2px rgba(20, 217, 0, 0.6);
                     }
-            
+
                     &.pending{
                         background-color: rgba(254, 184, 68, 0.1);
                         border: solid 2px rgba(254, 184, 61, 0.6);
                     }
-            
+
                     &.failed{
                         background-color: rgba(255, 0, 0, 0.1);
                         border: solid 2px rgba(255, 0, 0, 0.6);

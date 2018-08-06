@@ -1,0 +1,66 @@
+.select-token{
+    height: 66px;
+    z-index: 1000;
+
+    &.is-open {
+        .Select-control{
+            .alice-balance-panel_balance{
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+        }
+
+        .Select-menu-outer{
+            .alice-balance-panel_balance{
+                background-color: #30404e;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+        }
+    }
+    .Select-control{
+        cursor: pointer;
+        position: relative;
+        
+        .Select-arrow-zone{
+            position: absolute;
+            top: 27px;
+            right: 27px;
+            opacity: 0.5;
+        }
+
+        .Select-input{
+            display: none !important;
+        }
+    }
+
+    .Select-menu{
+        cursor: pointer;
+        .select-token-option{
+            padding: 0.75em 1.5em;
+            cursor: pointer;
+            color: #44b6fe;
+
+
+            &:hover,
+            &:focus{
+                background-color: rgba(255, 255, 255, 0.12);
+                color: #FFFFFF;
+            }
+        }
+
+        border: solid 0.1em transparent;
+        border-top: 0;
+        margin: 0.1em -0.1em;
+        border-bottom-left-radius: 0.8em;
+        border-bottom-right-radius: 0.8em;
+    }
+
+    &-dropdown{
+        width: 1em;
+
+        &.opened {
+            transform: rotate(180deg);
+        }
+    }
+}

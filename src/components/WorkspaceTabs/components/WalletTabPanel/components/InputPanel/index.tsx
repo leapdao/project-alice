@@ -6,7 +6,6 @@ import SendButton from "./components/SendButton";
 import { InputPanelState } from "./types";
 
 import TooltipNotification from "../../../../../common/TooltipNotification";
-import { decimals } from "../../../../../../config";
 
 const dropdown = require("./img/dropdown.svg");
 const dropdownWhite = require("./img/dropdown-white.svg");
@@ -15,7 +14,6 @@ import {
     ALICE_PUBLIC_ADDRESS,
     BOB_PUBLIC_ADDRESS,
     CHARLIE_PUBLIC_ADDRESS,
-    symbol
 } from "./../../../../../../config";
 
 const users = [{
@@ -92,7 +90,12 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     }
 
     handleBlur = (e: React.FormEvent<HTMLInputElement>) => {
-        const balance = Number(new BigNumber((this.props as any).balance).div(decimals).toPrecision(2));
+        const { selectedToken } = this.props;
+        const balance = Number(
+            new BigNumber(this.props.balance)
+                .div(10 ** selectedToken.decimals)
+                .toPrecision(2)
+        );
         this.setState(state => {
             const amount = Number(state.amount);
             if (isNaN(amount) || !amount || amount < 0) {
@@ -106,28 +109,28 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     }
 
     handleSetMaxAmount = () => {
-        const { balance } = (this.props as any);
+        const { balance, selectedToken } = this.props;
         this.setState({
-            amount: new BigNumber(balance).div(decimals).toPrecision(2),
+            amount: new BigNumber(balance).div(10 ** selectedToken.decimals).toPrecision(2),
         });
     }
 
     handleSendTransaction = async () => {
         const { amount } = this.state;
-        const { balance } = (this.props as any);
+        const { balance, selectedToken } = this.props;
         if (amount && this.state.receiver) {
             this.setState({ sending: true });
             try {
                 await this.props.onSend(
                     this.state.receiver.account,
-                    BigNumber.min(new BigNumber(amount).times(decimals), balance).toNumber(),
+                    BigNumber.min(new BigNumber(amount).times(10 ** selectedToken.decimals), balance).toNumber(),
                 );
 
                 this.setState(() => ({
                     sent: true,
                     hiddenNotification: false,
                     notificationText:
-                        `${this.state.amount} ${symbol} successfully sent to ${this.state.receiver.name}`
+                        `${this.state.amount} ${selectedToken.symbol} successfully sent to ${this.state.receiver.name}`
                 }), () => {
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(() => {
@@ -192,14 +195,14 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                     onClick={this.handleSendTransaction}
                 />
                 {
-                                this.state.sent && (
-                                    <TooltipNotification
-                                        hidden={this.state.hiddenNotification}
-                                        text={this.state.notificationText}
-                                        style={notificationStyle}
-                                    />
-                                )
-                            }
+                    this.state.sent && (
+                        <TooltipNotification
+                            hidden={this.state.hiddenNotification}
+                            text={this.state.notificationText}
+                            style={notificationStyle}
+                        />
+                    )
+                }
             </div>
         );
     }

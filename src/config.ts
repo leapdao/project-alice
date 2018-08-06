@@ -13,5 +13,5 @@ export const WEB3_PROVIDER_PLASMA = "http://ec2-34-254-247-1.eu-west-1.compute.a
 export const WEB3_PROVIDER_ROOT = "https://rinkeby.infura.io";
 export const PROVIDER_ETHERSCAN_BASE = "http://rinkeby.etherscan.io" as string;
 export const TRANSACTIONS_PAGE_SIZE = 15;
-export const symbol = "PSC";
-export const decimals = new BigNumber(10).pow(9);
+
+export const TOKEN_CONTRACT_ADDRESS = "0x258daf43d711831b8fd59137f42030784293e9e6";
