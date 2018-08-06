@@ -97,7 +97,7 @@ const TxTr = observer(({ tx, addresses }) => {
         <TokensContext.Consumer>
             {({ tokens }: any) => {
                 const txObject = Tx.fromRaw(tx.raw);
-                const color = txObject.outputs[0].color;
+                const color = txObject.outputs[0] ? txObject.outputs[0].color : 0;
                 const token = tokens[color];
                 return txObject && token && (
                     <tr className={`tx-tr ${getStatus(tx)}`}>

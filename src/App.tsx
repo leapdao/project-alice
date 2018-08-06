@@ -72,9 +72,8 @@ export default class App extends React.PureComponent {
       };
     }));
 
-
-    const token = (tokens[0] as any).token;
     const color = 0;
+    const token = (tokens[color] as any).token;
 
     this.store = {
       alice: new Store({
@@ -104,7 +103,7 @@ export default class App extends React.PureComponent {
       tokens: tokens,
       selected: tokens[color],
       ready: true,
-      tcs: tokens.map(({token}) => token)
+      tcs: tokens.map(({token}) => token),
     }));
   }
 

@@ -62,7 +62,7 @@ const getTransactions = async (address: string, fromBlock: number, toBlock: numb
 };
 
 const loadStore = (address) => {
-    const store = localStorage.getItem(`psc2_store_${address.substr(2, 6)}`);
+    const store = null; // localStorage.getItem(`psc2_store_${address.substr(2, 6)}`);
     return store && JSON.parse(store) || {
         fromBlock: GENESIS_BLOCK,
         balance: 0,
@@ -108,7 +108,7 @@ class Store {
 
             this.getBalance(address);
             this.getBalances(address);
-            
+
             this.load(address, this.fromBlock);
 
         } catch (error) {
@@ -153,7 +153,7 @@ class Store {
             const balances = await Promise.all(this.tcs.map( (tc) => {
                 return tc.methods.balanceOf(address).call();
             } ));
-            
+
             assign(this, {balances: balances.map(b => new BigNumber(b).toNumber())});
 
         } catch (err) {
