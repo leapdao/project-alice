@@ -3,8 +3,6 @@ import * as React from "react";
 import { Provider } from "mobx-react";
 import { findIndex } from "lodash";
 
-import "react-table/react-table.css";
-
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import WorkspaceTabs from "./components/WorkspaceTabs";
