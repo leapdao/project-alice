@@ -53,6 +53,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
   })
   .then(
     ({ stats, previousFileSizes, warnings }) => {
+      fs.writeFileSync('stats.json', JSON.stringify(stats.toJson(), undefined, 2));
       if (warnings.length) {
         console.log(chalk.yellow('Compiled with warnings.\n'));
         console.log(warnings.join('\n\n'));

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { sortBy } from "lodash";
 import { Tx } from "parsec-lib";
 import BigNumber from "bignumber.js";
 
@@ -158,7 +157,14 @@ class TransactionsPanel extends React.Component<any> {
                     <tbody className="tx-tbody">
                         {
                             transactions.length > 0 ?
-                                sortBy(transactions, [(tx) => getStatus(tx) !== "pending", (tx) => -tx.blockNumber])
+                                transactions
+                                    .sort((tx1, tx2) => {
+                                        const tx1v1 = getStatus(tx1) !== "pending" ? 1 : 0;
+                                        const tx2v1 = getStatus(tx2) !== "pending" ? 1 : 0;
+                                        const tx1v2 = -tx1.blockNumber;
+                                        const tx2v2 = -tx2.blockNumber;
+                                        return (tx1v1 - tx2v1) || (tx1v2 - tx2v2);
+                                    })
                                     .slice(
                                         page * TRANSACTIONS_PAGE_SIZE,
                                         page * TRANSACTIONS_PAGE_SIZE + TRANSACTIONS_PAGE_SIZE

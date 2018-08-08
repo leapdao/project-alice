@@ -1,7 +1,6 @@
 require("dotenv").config({ path: ".env" });
 import * as React from "react";
 import { Provider } from "mobx-react";
-import { findIndex } from "lodash";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -106,7 +105,7 @@ export default class App extends React.PureComponent {
   }
 
     onChangeToken = (token: Token) => {
-        const color = findIndex(this.state.tokens, (t) => (
+        const color = this.state.tokens.findIndex((t) => (
             t.token.options.address === token.token.options.address
         ));
         this.store.alice.color = color;
@@ -123,7 +122,7 @@ export default class App extends React.PureComponent {
   render() {
     if (this.state.ready) {
       const token = this.state.selected.token;
-      const color = findIndex(this.state.tokens, (t) => (
+      const color = this.state.tokens.findIndex((t) => (
         t.token.options.address === token.options.address
       ));
 

@@ -1,5 +1,4 @@
 import { observable, action } from "mobx";
-import { assign } from "lodash";
 import { TransactionReceipt } from "web3/types";
 import getWeb3 from "../getWeb3";
 
@@ -16,13 +15,13 @@ export default class Transaction {
     @observable gasUsed: number;
 
     constructor(receipt: TransactionReceipt) {
-        assign(this, receipt);
+        Object.assign(this, receipt);
         this.loadReceipt(receipt.transactionHash);
     }
 
     @action
     update = (receipt) => {
-        assign(this, receipt);
+        Object.assign(this, receipt);
     }
 
     @action

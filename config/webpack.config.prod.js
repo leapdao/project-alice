@@ -110,7 +110,9 @@ module.exports = {
       'react-native': 'react-native-web',
       'public': path.resolve('../public'),
       'public': path.resolve('../src'),
-      'components': path.resolve('../src/components')
+      'components': path.resolve('../src/components'),
+      'elliptic': require.resolve('elliptic'),
+      'bn.js': require.resolve('bn.js'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).

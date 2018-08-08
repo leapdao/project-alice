@@ -1,4 +1,3 @@
-import { size, map } from "lodash";
 import getWeb3 from "../getWeb3";
 import { Transaction } from "web3/types";
 
@@ -9,7 +8,7 @@ export const TRANSACTIONS_GET_LAST_ONE_FAILED = "TRANSACTIONS_GET_LAST_ONE_FAILE
 export const TRANSACTIONS_GET_RECEIPT_SUCCESS = "TRANSACTIONS_GET_RECEIPT_SUCCESS";
 export const TRANSACTIONS_GET_RECEIPT_FAILED = "TRANSACTIONS_GET_RECEIPT_FAILED";
 
-const getTransactions = (lastBlock, address) => new Promise((resolve, reject) => {
+const getTransactions = (lastBlock, address): Promise<any[]> => new Promise((resolve, reject) => {
     const transactionsOwnFilter = (transaction) => {
         return String(transaction.from).toLowerCase() === address.toLowerCase() ||
             String(transaction.to).toLowerCase() === address.toLowerCase();
@@ -47,8 +46,7 @@ const getTransactionReceipt = (hash) => new Promise((resolve, reject) => {
 export const getLastTransactions = (lastBlock, address) => (dispatch) => {
     getTransactions(lastBlock, address)
         .then(async (transactions) => {
-            console.log(transactions);
-            if (size(transactions) > 0) {
+            if (transactions.length > 0) {
                 dispatch({
                     type: TRANSACTIONS_GET_LAST_ONE_SUCCESS,
                     payload: {
@@ -59,9 +57,7 @@ export const getLastTransactions = (lastBlock, address) => (dispatch) => {
                     }
                 });
 
-                map(transactions, ({ hash }: Transaction) => getTransactionReceipt(hash));
-
-                map(transactions, ({ hash }: Transaction) => getTransactionReceipt(hash).then(receipt => {
+                transactions.map(({ hash }: Transaction) => getTransactionReceipt(hash).then(receipt => {
                     dispatch({
                         type: TRANSACTIONS_GET_RECEIPT_SUCCESS,
                         payload: {

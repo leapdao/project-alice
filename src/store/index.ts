@@ -1,7 +1,7 @@
 import { observable, action, toJS, reaction } from "mobx";
 import TransactionModel from "./Transaction";
 import getWeb3 from "../getWeb3";
-import { size, findIndex, map, assign, memoize } from "lodash";
+import * as memoize from "mem";
 import BigNumber from "bignumber.js";
 import { Transaction, TransactionReceipt, Contract } from "web3/types";
 import { GENESIS_BLOCK } from "../config";
@@ -35,7 +35,6 @@ const readBlocksInBatch = (fromBlock: number, toBlock: number): Promise<Array<an
 
 // request once for all stores
 const getBlocksRange = memoize((fromBlock: number, toBlock: number) => {
-
     if (false) { // parsec node doesn't support batches
         const web3 = getWeb3();
         return Promise.all(range(fromBlock, toBlock + 1)
@@ -96,13 +95,11 @@ class Store {
         try {
             const { transactions, ...store }: any = loadStore(this.address);
 
-            assign(this, store);
+            Object.assign(this, store);
 
             if (transactions) {
-                assign(this, {
-                    transactions: transactions.map((transaction: TransactionReceipt) => {
-                        return new TransactionModel(transaction);
-                    })
+                this.transactions = transactions.map((transaction: TransactionReceipt) => {
+                    return new TransactionModel(transaction);
                 });
             }
 
@@ -118,12 +115,12 @@ class Store {
 
     @action
     add = (transaction: any) => {
-        const index = findIndex(this.transactions, ({transactionHash}: any) => {
+        const index = this.transactions.findIndex(({transactionHash}: any) => {
             return transactionHash === transaction.hash;
         });
 
         if (index === -1) {
-            const tx = new TransactionModel(assign({}, transaction, {
+            const tx = new TransactionModel(Object.assign({}, transaction, {
                 transactionHash: transaction.hash
             }));
             this.transactions.push(tx);
@@ -140,7 +137,7 @@ class Store {
     getBalance = async (address) => {
         try {
             const balance = await this.token.methods.balanceOf(address).call();
-            assign(this, {balance: new BigNumber(balance).toNumber()});
+            this.balance = new BigNumber(balance).toNumber();
         } catch (err) {
             console.error(err.message);
         }
@@ -154,8 +151,7 @@ class Store {
                 return tc.methods.balanceOf(address).call();
             } ));
 
-            assign(this, {balances: balances.map(b => new BigNumber(b).toNumber())});
-
+            this.balances = balances.map(b => new BigNumber(b).toNumber());
         } catch (err) {
             console.error(err.message);
         }
@@ -171,8 +167,8 @@ class Store {
         try {
             const transactions = await getTransactions(address, fromBlock, blockNumber);
 
-            if (size(transactions) > 0) {
-                map(transactions, this.add.bind(this));
+            if (transactions.length > 0) {
+                transactions.map(this.add.bind(this));
                 this.getBalance(address);
                 this.getBalances(address);
             }
