@@ -122,15 +122,25 @@ class BalancePanel extends React.Component<any> {
                 <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
                 <div className="flex-column flex-one">
                     <TokensContext.Consumer>
-                        {({ selected, tokens, changeToken, color }: any) => (
-                            <SelectToken
-                                balances={this.props.balances}
-                                tokens={tokens.map(this.filterBalance)}
-                                onChange={changeToken}
-                                color={color}
-                                selected={this.filterBalance(selected)}
-                            />
-                        )}
+                        {({ selected, tokens, changeToken, color }: any) => {
+                            if (tokens && selected) {
+                                return (
+                                    <SelectToken
+                                        balances={this.props.balances}
+                                        tokens={tokens.map(this.filterBalance)}
+                                        onChange={changeToken}
+                                        color={color}
+                                        selected={this.filterBalance(selected)}
+                                    />
+                                );
+                            }
+
+                            return (
+                                <div className="alice-balance-panel_balance">
+                                    Loading...
+                                </div>
+                            );
+                        }}
                     </TokensContext.Consumer>
                     <div className="alice-balance-panel_address">
                         <span className="alice-balance-panel_address-text">

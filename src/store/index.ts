@@ -84,8 +84,8 @@ class Store {
     tcs: Array<Contract> = [];
 
     // ToDo: pass privKey only. Address can be derrived from private key
-    constructor({address, key, token, tcs, color}:
-        {address: string, key: string, token: Contract, tcs: Array<Contract>, color: number}) {
+    constructor({ address, key, token, tcs, color }:
+        {address: string, key: string, token?: Contract, tcs?: Array<Contract>, color: number}) {
         this.address = address;
         this.privKey = key;
         this.token = token;
@@ -103,14 +103,24 @@ class Store {
                 });
             }
 
-            this.getBalance(address);
-            this.getBalances(address);
+            // this.getBalance(address);
+            // this.getBalances(address);
 
-            this.load(address, this.fromBlock);
+            // this.load(address, this.fromBlock);
 
         } catch (error) {
             console.error(error.message);
         }
+    }
+
+    @action
+    setTokens(tokens: Array<Contract>) {
+        this.tcs = tokens;
+        this.token = this.tcs[0];
+
+        this.getBalance(this.address);
+        this.getBalances(this.address);
+        this.load(this.address, this.fromBlock);
     }
 
     @action
