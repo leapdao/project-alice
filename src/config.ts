@@ -1,5 +1,3 @@
-import BigNumber from "bignumber.js";
-
 export const ALICE_PUBLIC_ADDRESS = "0x4436373705394267350Db2C06613990D34621d69";
 export const ALICE_PRIVATE_KEY = "0xad8e31c8862f5f86459e7cca97ac9302c5e1817077902540779eef66e21f394a";
 

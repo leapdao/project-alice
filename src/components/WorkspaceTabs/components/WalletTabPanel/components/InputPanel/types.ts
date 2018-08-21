@@ -4,7 +4,7 @@ export interface InputPanelProps {
 }
 
 export interface InputPanelState {
-    amount: string | "";
+    amount: string | number | "";
     receiver: null | {
         name: String;
         account: String;

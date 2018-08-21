@@ -18,7 +18,6 @@ import BalancePanel from "./components/BalancePanel";
 import TransactionsPanel from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
 import { TokensContext } from "../../../../contexts";
-import BigNumber from "bignumber.js";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
     static defaultProps = {
@@ -32,15 +31,14 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const unspent = await web3.getUnspent(store.address);
 
         if (unspent.length > 1) {
-            const balance = await store.tcs[store.color].methods.balanceOf(store.address).call();
-            const balanceNumber = new BigNumber(balance).toNumber();
+            const balance = Number(await store.tcs[store.color].methods.balanceOf(store.address).call());
 
-            const inputs = helpers.calcInputs(unspent, store.address, balanceNumber, store.color);
-            const output = new Output(balanceNumber, store.address, store.color);
-    
+            const inputs = helpers.calcInputs(unspent, store.address, balance, store.color);
+            const output = new Output(balance, store.address, store.color);
+
             const tx = Tx.consolidate(inputs, output);
             web3.eth.sendSignedTransaction(tx.toRaw());
-        } 
+        }
     }
 
     handleSendTransaction = async (to: string, value: number) => {

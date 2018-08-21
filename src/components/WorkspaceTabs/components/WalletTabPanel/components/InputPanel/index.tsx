@@ -1,11 +1,11 @@
 import * as React from "react";
-import BigNumber from "bignumber.js";
 import Select, { OptionComponentProps, OptionValues } from "react-select";
 
 import SendButton from "./components/SendButton";
 import { InputPanelState } from "./types";
 
 import TooltipNotification from "../../../../../common/TooltipNotification";
+import { fromCents, toCents } from "../../../../../../utils";
 
 const dropdown = require("./img/dropdown.svg");
 const dropdownWhite = require("./img/dropdown-white.svg");
@@ -91,11 +91,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
 
     handleBlur = (e: React.FormEvent<HTMLInputElement>) => {
         const { selectedToken } = this.props;
-        const balance = Number(
-            new BigNumber(this.props.balance)
-                .div(10 ** selectedToken.decimals)
-                .toPrecision(2)
-        );
+        const balance = fromCents(this.props.balance, selectedToken.decimals);
         this.setState(state => {
             const amount = Number(state.amount);
             if (isNaN(amount) || !amount || amount < 0) {
@@ -111,7 +107,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     handleSetMaxAmount = () => {
         const { balance, selectedToken } = this.props;
         this.setState({
-            amount: new BigNumber(balance).div(10 ** selectedToken.decimals).toPrecision(2),
+            amount: fromCents(balance, selectedToken.decimals),
         });
     }
 
@@ -123,7 +119,10 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
             try {
                 await this.props.onSend(
                     this.state.receiver.account,
-                    BigNumber.min(new BigNumber(amount).times(10 ** selectedToken.decimals), balance).toNumber(),
+                    Math.min(
+                        toCents(amount, selectedToken.decimals),
+                        balance
+                    ),
                 );
 
                 this.setState(() => ({

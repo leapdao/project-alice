@@ -2,7 +2,6 @@ import { observable, action, toJS, reaction } from "mobx";
 import TransactionModel from "./Transaction";
 import getWeb3 from "../getWeb3";
 import * as memoize from "mem";
-import BigNumber from "bignumber.js";
 import { Transaction, TransactionReceipt, Contract } from "web3/types";
 import { GENESIS_BLOCK } from "../config";
 
@@ -147,7 +146,7 @@ class Store {
     getBalance = async (address) => {
         try {
             const balance = await this.token.methods.balanceOf(address).call();
-            this.balance = new BigNumber(balance).toNumber();
+            this.balance = Number(balance);
         } catch (err) {
             console.error(err.message);
         }
@@ -161,7 +160,7 @@ class Store {
                 return tc.methods.balanceOf(address).call();
             } ));
 
-            this.balances = balances.map(b => new BigNumber(b).toNumber());
+            this.balances = balances.map(b => Number(b));
         } catch (err) {
             console.error(err.message);
         }

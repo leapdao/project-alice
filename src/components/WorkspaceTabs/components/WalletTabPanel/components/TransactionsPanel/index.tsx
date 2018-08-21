@@ -1,7 +1,6 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { Tx } from "parsec-lib";
-import BigNumber from "bignumber.js";
 
 import "./style.scss";
 
@@ -12,7 +11,8 @@ import Checkmark from "./../../../../../common/Checkmark";
 import Cross from "./../../../../../common/Cross";
 import { TokensContext } from "../../../../../../contexts";
 
-import { PROVIDER_ETHERSCAN_BASE, TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
+import { TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
+import { fromCents } from "../../../../../../utils";
 
 const getStatus = (original) => {
 
@@ -85,9 +85,7 @@ const getName = (addresses, address) => {
 
 const getFee = (tx, token) => (
     tx.gasPrice &&
-    new BigNumber(tx.gasPrice)
-        .times(tx.gas)
-        .div(10 ** token.decimals).toNumber() ||
+    fromCents(tx.gasPrice * tx.gas, token.decimals) ||
     null
 );
 
@@ -111,7 +109,7 @@ const TxTr = observer(({ tx, addresses }) => {
                             {getName(addresses, tx.to)}
                         </td>
                         <td className="tx-td">
-                            {new BigNumber(tx.value).div(10 ** token.decimals).toNumber()}
+                            {fromCents(tx.value, token.decimals)}
                             {" "}
                             {token.symbol}
                         </td>

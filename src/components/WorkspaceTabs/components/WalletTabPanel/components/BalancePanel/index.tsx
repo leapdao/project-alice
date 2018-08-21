@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as copytoclipboard from "copy-to-clipboard";
-import BigNumber from "bignumber.js";
 const QRCode = require("qrcode");
 
 import "./style.scss";
@@ -20,7 +19,6 @@ import TooltipNotification from "../../../../../common/TooltipNotification";
 import { TokensContext } from "../../../../../../contexts";
 
 import "./style.scss";
-import { Token } from "../../types";
 import { observer } from "mobx-react";
 
 class CopyButton extends React.PureComponent<any> {
