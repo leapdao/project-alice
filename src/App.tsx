@@ -59,8 +59,9 @@ export default class App extends React.PureComponent {
     load = async () => {
       const node = getWeb3();
       const rinkeby = getWeb3(true);
-
+      console.log("preColors");
       const colors = await node.getColors();
+      console.log("colors", colors);
 
       const tokens = await Promise.all(colors.map(async (color) => {
         const contract = await new rinkeby.eth.Contract(TOKEN_ABI, color);
