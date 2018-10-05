@@ -15,7 +15,6 @@ import { TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
 import { fromCents } from "../../../../../../utils";
 
 const getStatus = (original) => {
-
     switch (original.status) {
         case true:
         case "0x1":
@@ -75,7 +74,7 @@ const PendingTr = () => (
 );
 
 const getName = (addresses, address) => {
-    const id = addresses[address.toLowerCase()];
+    const id = addresses[address && address.toLowerCase()];
     if (id) {
         return names[id];
     }
@@ -99,8 +98,12 @@ const TxTr = observer(({ tx, addresses }) => {
                 return txObject && token && (
                     <tr className={`tx-tr ${getStatus(tx)}`}>
                         <td className="tx-td tx-td_hash">
-
-                            {tx.transactionHash.substr(2, 6)}
+                            <a
+                                href={`https://stake-dev.parseclabs.org/explorer/${tx.transactionHash}`}
+                                target="blank"
+                            >
+                                {tx.transactionHash.substr(2, 6)}
+                            </a>
                         </td>
                         <td className="tx-td tx-td_from">
                            {getName(addresses, tx.from)}
