@@ -106,10 +106,10 @@ const TxTr = observer(({ tx, addresses }) => {
                             </a>
                         </td>
                         <td className="tx-td tx-td_from">
-                           {getName(addresses, tx.from)}
+                            {tx.from ? getName(addresses, tx.from) : "→ deposit"}
                         </td>
                         <td className="tx-td tx-td_to">
-                            {getName(addresses, tx.to)}
+                            {tx.to ? getName(addresses, tx.to) : "exit →"}
                         </td>
                         <td className="tx-td">
                             {fromCents(tx.value, token.decimals)}
