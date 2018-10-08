@@ -13,6 +13,7 @@
     "babel-preset-stage-1": "^6.24.1",
     "html-webpack-inline-source-plugin": "^0.0.10",
     "node-sass": "^4.9.0",
+    "prettier": "^1.14.3",
     "react-addons-test-utils": "^15.6.2",
     "sass-loader": "^7.0.3",
     "types-bn": "^0.0.1"
@@ -148,5 +149,14 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true
   }
 }

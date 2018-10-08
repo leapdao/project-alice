@@ -1,7 +1,7 @@
-import { Contract } from "web3/types";
+import { Contract } from 'web3/types';
 
 // export * from "./react-ripples";
-export * from "./window";
+export * from './window';
 
 export type Token = {
   symbol: string;

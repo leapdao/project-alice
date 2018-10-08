@@ -53,9 +53,9 @@
       "check-open-brace",
       "check-whitespace"
     ],
-    "quotemark": [true, "double", "jsx-double"],
+    "quotemark": [true, "single", "jsx-double"],
     "radix": true,
-    "semicolon": [true, "always"],
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
     "switch-default": true,
 
     "trailing-comma": false,

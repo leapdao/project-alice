@@ -1,6 +1,6 @@
-import * as Web3 from "web3";
-import { WEB3_PROVIDER_PLASMA, WEB3_PROVIDER_ROOT } from "./config";
-import { helpers, ExtendedWeb3 } from "parsec-lib";
+import * as Web3 from 'web3';
+import { WEB3_PROVIDER_PLASMA, WEB3_PROVIDER_ROOT } from './config';
+import { helpers, ExtendedWeb3 } from 'parsec-lib';
 
 let web3plasma: ExtendedWeb3;
 let web3root: ExtendedWeb3;

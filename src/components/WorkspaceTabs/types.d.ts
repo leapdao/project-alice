@@ -1,2 +1,1 @@
-type WorkspaceTabsProps = {
-};
+type WorkspaceTabsProps = {};
