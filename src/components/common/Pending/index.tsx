@@ -1,11 +1,11 @@
-import * as React from "react";
+import * as React from 'react';
 
-import "./style.scss";
+import './style.scss';
 
 export default () => (
-    <div className="tx-spinner">
-        <span/>
-        <span/>
-        <span/>
-    </div>
+  <div className="tx-spinner">
+    <span />
+    <span />
+    <span />
+  </div>
 );

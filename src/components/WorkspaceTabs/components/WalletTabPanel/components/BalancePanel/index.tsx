@@ -1,154 +1,164 @@
-import * as React from "react";
-import * as copytoclipboard from "copy-to-clipboard";
-const QRCode = require("qrcode");
+import * as React from 'react';
+import * as copytoclipboard from 'copy-to-clipboard';
+const QRCode = require('qrcode');
 
-import "./style.scss";
+import './style.scss';
 import {
-    ALICE_PUBLIC_ADDRESS,
-    BOB_PUBLIC_ADDRESS,
-    CHARLIE_PUBLIC_ADDRESS
-} from "../../../../../../config";
+  ALICE_PUBLIC_ADDRESS,
+  BOB_PUBLIC_ADDRESS,
+  CHARLIE_PUBLIC_ADDRESS,
+} from '../../../../../../config';
 
-const copy = require("./img/copy.svg");
-const copyWhite = require("./img/copy-white.svg");
+const copy = require('./img/copy.svg');
+const copyWhite = require('./img/copy-white.svg');
 
-import SelectToken from "./components/SelectToken";
+import SelectToken from './components/SelectToken';
+import TooltipNotification from '../../../../../common/TooltipNotification';
+import { TokensContext } from '../../../../../../contexts';
+import { Token } from '../../types';
 
-import TooltipNotification from "../../../../../common/TooltipNotification";
-
-import { TokensContext } from "../../../../../../contexts";
-
-import "./style.scss";
-import { observer } from "mobx-react";
+import './style.scss';
+import { observer } from 'mobx-react';
 
 class CopyButton extends React.PureComponent<any> {
-    state = {
-        copied: false,
-        hidden: false
-    };
+  state = {
+    copied: false,
+    hidden: false,
+  };
 
-    timeout: NodeJS.Timer;
+  timeout: NodeJS.Timer;
 
-    handleCopy = () => {
-        const { onClick } = this.props;
+  handleCopy = () => {
+    const { onClick } = this.props;
 
-        if (typeof onClick === "function") {
-            onClick();
-        }
-
-        this.setState(() => ({
-            copied: true,
-            hidden: false
-        }), () => {
-            clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-                this.setState(() => ({
-                    hidden: true
-                }));
-
-                this.timeout = setTimeout(() => {
-                    this.setState(() => ({
-                        copied: false,
-                        hidden: false
-                    }));
-                }, 1000);
-            }, 3000);
-        });
+    if (typeof onClick === 'function') {
+      onClick();
     }
 
-    render() {
-        return (
-            <div className="alice-balance-panel_address-copy_button">
-                <button onClick={this.handleCopy}>
-                    <img src={copy} className="alice-balance-panel_address-copy_button_icon" />
-                    <img src={copyWhite} className="alice-balance-panel_address-copy_button_icon-white" />
-                </button>
-                {
-                    this.state.copied && (
-                        <TooltipNotification hidden={this.state.hidden} text="Address copied to clipboard" />
-                    )
-                }
-            </div>
-        );
-    }
+    this.setState(
+      () => ({
+        copied: true,
+        hidden: false,
+      }),
+      () => {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this.setState(() => ({
+            hidden: true,
+          }));
+
+          this.timeout = setTimeout(() => {
+            this.setState(() => ({
+              copied: false,
+              hidden: false,
+            }));
+          }, 1000);
+        }, 3000);
+      }
+    );
+  };
+
+  render() {
+    return (
+      <div className="alice-balance-panel_address-copy_button">
+        <button onClick={this.handleCopy}>
+          <img
+            src={copy}
+            className="alice-balance-panel_address-copy_button_icon"
+          />
+          <img
+            src={copyWhite}
+            className="alice-balance-panel_address-copy_button_icon-white"
+          />
+        </button>
+        {this.state.copied && (
+          <TooltipNotification
+            hidden={this.state.hidden}
+            text="Address copied to clipboard"
+          />
+        )}
+      </div>
+    );
+  }
 }
 
 const addresses = {
-    [ALICE_PUBLIC_ADDRESS]: 0,
-    [BOB_PUBLIC_ADDRESS]: 1,
-    [CHARLIE_PUBLIC_ADDRESS]: 2
+  [ALICE_PUBLIC_ADDRESS]: 0,
+  [BOB_PUBLIC_ADDRESS]: 1,
+  [CHARLIE_PUBLIC_ADDRESS]: 2,
 };
 
 @observer
 class BalancePanel extends React.Component<any> {
+  static defaultProps = {
+    balance: 0,
+  };
 
-    static defaultProps = {
-        balance: 0
-    };
+  qrcode: React.RefObject<any>;
 
-    qrcode: React.RefObject<any>;
+  state = {
+    copied: false,
+  };
 
-    state = {
-        copied: false
-    };
+  constructor(props: any) {
+    super(props);
+    this.qrcode = React.createRef();
+  }
 
-    constructor(props: any) {
-        super(props);
-        this.qrcode = React.createRef();
-    }
+  componentDidMount() {
+    QRCode.toCanvas(
+      this.qrcode.current,
+      this.props.address,
+      { errorCorrectionLevel: 'M', version: 3 },
+      function(err: Error) {
+        if (err) {
+          console.error(err.message);
+        }
+      }
+    );
+  }
 
-    componentDidMount() {
-        QRCode.toCanvas(
-            this.qrcode.current,
-            this.props.address,
-            { errorCorrectionLevel: "M", version: 3 },
-            function (err: Error) {
-                if (err) {
-                    console.error(err.message);
-                }
-            });
-    }
+  filterBalance = (token: Token): any => ({
+    ...token,
+    balance:
+      token.balances && token.balances[(addresses as any)[this.props.address]],
+  });
 
-    filterBalance = (token): any => ({
-        ...token,
-        balance: token.balances[addresses[this.props.address]]
-    })
+  render() {
+    return (
+      <div className="alice-balance-panel">
+        <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
+        <div className="flex-column flex-one">
+          <TokensContext.Consumer>
+            {({ selected, tokens, changeToken, color }: any) => {
+              if (tokens && selected) {
+                return (
+                  <SelectToken
+                    balances={this.props.balances}
+                    tokens={tokens.map(this.filterBalance)}
+                    onChange={changeToken}
+                    color={color}
+                    selected={this.filterBalance(selected)}
+                  />
+                );
+              }
 
-    render() {
-        return (
-            <div className="alice-balance-panel">
-                <canvas className="alice-balance-panel_qr" ref={this.qrcode} />
-                <div className="flex-column flex-one">
-                    <TokensContext.Consumer>
-                        {({ selected, tokens, changeToken, color }: any) => {
-                            if (tokens && selected) {
-                                return (
-                                    <SelectToken
-                                        balances={this.props.balances}
-                                        tokens={tokens.map(this.filterBalance)}
-                                        onChange={changeToken}
-                                        color={color}
-                                        selected={this.filterBalance(selected)}
-                                    />
-                                );
-                            }
-
-                            return (
-                                <div className="alice-balance-panel_balance">
-                                    Loading...
-                                </div>
-                            );
-                        }}
-                    </TokensContext.Consumer>
-                    <div className="alice-balance-panel_address">
-                        <span className="alice-balance-panel_address-text">
-                            Address: <strong className="white">{this.props.address}</strong>
-                        </span>
-                        <CopyButton onClick={copytoclipboard.bind(this, this.props.address)} />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+              return (
+                <div className="alice-balance-panel_balance">Loading...</div>
+              );
+            }}
+          </TokensContext.Consumer>
+          <div className="alice-balance-panel_address">
+            <span className="alice-balance-panel_address-text">
+              Address: <strong className="white">{this.props.address}</strong>
+            </span>
+            <CopyButton
+              onClick={copytoclipboard.bind(this, this.props.address)}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 export default BalancePanel;

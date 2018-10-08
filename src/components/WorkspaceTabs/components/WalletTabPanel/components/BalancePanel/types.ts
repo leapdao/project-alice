@@ -1,3 +1,3 @@
 export type BalancePanelProps = {
-    alice: any
+  alice: any;
 };

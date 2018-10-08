@@ -1,7 +1,11 @@
-import * as React from "react";
+import * as React from 'react';
 
-import "./style.scss";
+import './style.scss';
 
 export default (props: any) => (
-    <div className={`tx-checkmark${props.animation ? " tx-checkmark-with-animation" : ""}`}/>
+  <div
+    className={`tx-checkmark${
+      props.animation ? ' tx-checkmark-with-animation' : ''
+    }`}
+  />
 );

@@ -13,6 +13,7 @@
     "babel-preset-stage-1": "^6.24.1",
     "html-webpack-inline-source-plugin": "^0.0.10",
     "node-sass": "^4.9.0",
+    "prettier": "^1.14.3",
     "react-addons-test-utils": "^15.6.2",
     "sass-loader": "^7.0.3",
     "types-bn": "^0.0.1"
@@ -20,13 +21,11 @@
   "dependencies": {
     "@types/enzyme": "^3.1.10",
     "@types/jest": "^23.0.0",
+    "@types/mem": "^1.1.2",
     "@types/node": "^10.3.1",
     "@types/react": "^16.3.16",
     "@types/react-dom": "^16.0.6",
-    "@types/react-redux": "^6.0.2",
     "@types/react-select": "^1.2.7",
-    "@types/redux": "^3.6.0",
-    "@types/redux-thunk": "^2.1.0",
     "autoprefixer": "7.1.6",
     "babel-jest": "^22.1.0",
     "babel-loader": "^7.1.2",
@@ -62,14 +61,11 @@
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.0",
     "react-paginate": "^5.2.3",
-    "react-redux": "^5.0.7",
     "react-ripples": "^1.1.2",
     "react-select": "^1.2.1",
     "react-tabs": "^2.2.2",
     "react-transition-group": "^2.3.1",
     "react-web3": "^0.4.5",
-    "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0",
     "resolve": "1.6.0",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.21.0",
@@ -80,7 +76,7 @@
     "tslint": "^5.7.0",
     "tslint-config-prettier": "^1.10.0",
     "tslint-react": "^3.2.0",
-    "typescript": "^2.9.1",
+    "typescript": "3.0.1",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "url-loader": "0.6.2",
     "web3": "^1.0.0-beta.34",
@@ -153,5 +149,14 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true
   }
 }
