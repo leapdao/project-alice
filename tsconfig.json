@@ -9,6 +9,7 @@
     ],
     "sourceMap": true,
     "allowJs": true,
+    "experimentalDecorators": true,
     "jsx": "react",
     "moduleResolution": "node",
     "rootDir": "src",
@@ -17,7 +18,6 @@
     "noImplicitAny": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
-    "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
       "*": [
@@ -38,6 +38,7 @@
     "src/setupTests.ts"
   ],
   "include": [
+    "src/*",
     "./types",
     "./node_modules/web3",
     "./node_modules/@machinomy/types-ethereumjs-tx"

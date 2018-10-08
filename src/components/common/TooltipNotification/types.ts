@@ -1,6 +1,6 @@
 export type TooltipNotificationProps = {
-    hidden: boolean;
-    text: string;
+    hidden?: boolean;
+    text?: string;
     style?: any,
     textStyle?: any
 };

@@ -24,17 +24,23 @@ import {
 import { Token } from "./components/WorkspaceTabs/components/WalletTabPanel/types";
 
 import { TokensContext } from "./contexts";
-export default class App extends React.PureComponent {
+
+interface State {
+  tokens: Token[];
+  selected: Token | null;
+}
+
+export default class App extends React.PureComponent<any, State> {
 
     store: any = {};
 
-    state = {
-      tokens: [],
-      selected: null,
-    };
-
     constructor(props: any) {
       super(props);
+
+      this.state = {
+        tokens: [] as Token[],
+        selected: null,
+      };
 
       this.store = {
         alice: new Store({
@@ -63,7 +69,7 @@ export default class App extends React.PureComponent {
       const colors = await node.getColors();
       console.log("colors", colors);
 
-      const tokens = await Promise.all(colors.map(async (color) => {
+      const tokens = await Promise.all(colors.map(async (color: string) => {
         const contract = await new rinkeby.eth.Contract(TOKEN_ABI, color);
         const symbol = await contract.methods.symbol().call();
         const decimals = await contract.methods.decimals().call();
@@ -112,9 +118,10 @@ export default class App extends React.PureComponent {
   render() {
     const { tokens, selected } = this.state;
     const token = selected && selected.token;
-    const color = tokens.findIndex((t) => (
+
+    const color = token ? tokens.findIndex((t) => (
       t.token.options.address === token.options.address
-    ));
+    )) : 0;
 
     const context = {
       tokens,

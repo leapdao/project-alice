@@ -18,11 +18,9 @@ import BalancePanel from "./components/BalancePanel";
 import TransactionsPanel from "./components/TransactionsPanel";
 import InputPanel from "./components/InputPanel";
 import { TokensContext } from "../../../../contexts";
+import { Contract } from "web3/types";
 
 export default class WalletTabPanel extends React.Component<WalletTabPanelProps> {
-    static defaultProps = {
-        store: {}
-    };
 
     consolidateAddress = async () => {
         const { store } = this.props;
@@ -30,14 +28,15 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
 
         const unspent = await web3.getUnspent(store.address);
 
-        if (unspent.length > 1) {
-            const balance = Number(await store.tcs[store.color].methods.balanceOf(store.address).call());
+        if (unspent.length > 1 && store && (store as any).tcs[store.color]) {
+            const contract = (store as any).tcs[store.color] as Contract;
+            const balance = Number(await contract.methods.balanceOf(store.address).call());
 
             const inputs = helpers.calcInputs(unspent, store.address, balance, store.color);
             const output = new Output(balance, store.address, store.color);
 
             const tx = Tx.consolidate(inputs, output);
-            web3.eth.sendSignedTransaction(tx.toRaw());
+            web3.eth.sendSignedTransaction(tx.toRaw() as any);
         }
     }
 
@@ -50,7 +49,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
         const tx = Tx.transfer(inputs, outputs).signAll(store.privKey);
 
         const hash = await new Promise((resolve, reject) => {
-            web3.eth.sendSignedTransaction(tx.toRaw(), (err, txHash) => {
+            web3.eth.sendSignedTransaction(tx.toRaw() as any, (err, txHash) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -103,7 +102,7 @@ export default class WalletTabPanel extends React.Component<WalletTabPanelProps>
     }
 }
 
-export const createWalletTabPanel = (wallet) => (inject((store: any) => ({
+export const createWalletTabPanel = (wallet: string) => (inject((store: any) => ({
     store: store[wallet],
     stores: store,
 }))(observer(WalletTabPanel))) as any;

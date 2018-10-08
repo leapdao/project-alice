@@ -22,12 +22,14 @@ export type SelectTokenState = {
     selected: Token | null
 };
 
-class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
-    handleMouseDown = (event) => {
+class Option extends React.PureComponent<OptionComponentProps<Token>> {
+    handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
 
-        this.props.onSelect(this.props.option, event);
+        if (this.props.onSelect) {
+            this.props.onSelect(this.props.option, event);
+        }
     }
 
     render() {
@@ -49,7 +51,7 @@ export default class SelectToken extends React.Component<SelectTokenProps, Selec
         tokens: []
     };
 
-    valueRenderer = (token) => {
+    valueRenderer = (token: Token) => {
         const balance = this.props.balances ? this.props.balances[this.props.color] : 0;
 
         return (
@@ -60,7 +62,7 @@ export default class SelectToken extends React.Component<SelectTokenProps, Selec
         );
     }
 
-    arrowRenderer = ({ isOpen }) => (
+    arrowRenderer = ({ isOpen }: { isOpen: boolean }) => (
         <img
             className={`select-token-dropdown${isOpen ? " opened" : ""}`}
             src={isOpen ? dropdownWhite : dropdown}
@@ -72,7 +74,7 @@ export default class SelectToken extends React.Component<SelectTokenProps, Selec
     }
 
     render() {
-        const {tokens} = this.props;
+        const { tokens } = this.props;
         return tokens.length > 0 ? (
             <Select
                 className="select-token"

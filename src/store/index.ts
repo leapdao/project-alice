@@ -1,8 +1,8 @@
-import { observable, action, toJS, reaction } from "mobx";
+import { observable, action } from "mobx";
+import * as memoize from "mem";
 import TransactionModel from "./Transaction";
 import getWeb3 from "../getWeb3";
-import * as memoize from "mem";
-import { Transaction, TransactionReceipt, Contract } from "web3/types";
+import { Transaction, TransactionReceipt, Contract, Block } from "web3/types";
 import { GENESIS_BLOCK } from "../config";
 
 const range = (from: number, to: number) => Array.from(new Array(to - from), (_, i) => i + from);
@@ -16,9 +16,9 @@ const readBlocksInBatch = (fromBlock: number, toBlock: number): Promise<Array<an
     const web3 = getWeb3();
     return new Promise((resolve) => {
         const batch = new web3.eth.BatchRequest();
-        const result = [];
+        const result = [] as Block[];
         let received = 0;
-        const callback = i => (err, block) => {
+        const callback = (i: number) => (err: any, block: Block) => {
             result[i - fromBlock] = block;
             if (received === toBlock - fromBlock) {
                 resolve(result);
@@ -26,14 +26,14 @@ const readBlocksInBatch = (fromBlock: number, toBlock: number): Promise<Array<an
             received += 1;
         };
         for (let i = fromBlock; i <= toBlock; i += 1) {
-            batch.add(web3.eth.getBlock.request(i, true, callback(i)));
+            batch.add((web3.eth.getBlock as any).request(i, true, callback(i)));
         }
         batch.execute();
     });
 };
 
 // request once for all stores
-const getBlocksRange = memoize((fromBlock: number, toBlock: number) => {
+const getBlocksRange = memoize((fromBlock: number, toBlock: number): Promise<Block[]> => {
     if (false) { // parsec node doesn't support batches
         const web3 = getWeb3();
         return Promise.all(range(fromBlock, toBlock + 1)
@@ -47,19 +47,16 @@ const getTransactions = async (address: string, fromBlock: number, toBlock: numb
         return [];
     }
 
-    // fromBlock = Math.max(fromBlock, toBlock - 1000); // limit blocks number to 1000
-
     const blocks = await getBlocksRange(fromBlock, toBlock);
-
     const transactions = (
         blocks
-            .filter(b => b && b.transactions)
-            .reduce((txs, block) => txs.concat(block.transactions.filter(txOwnFilter(address))), [])
+            .filter((b) => b && b.transactions)
+            .reduce((txs, block) => txs.concat(block.transactions.filter(txOwnFilter(address))), [] as Transaction[])
     );
     return transactions;
 };
 
-const loadStore = (address) => {
+const loadStore = (address: string) => {
     const store = null; // localStorage.getItem(`psc2_store_${address.substr(2, 6)}`);
     return store && JSON.parse(store) || {
         fromBlock: GENESIS_BLOCK,
@@ -69,7 +66,7 @@ const loadStore = (address) => {
 };
 
 class Store {
-    @observable transactions = [];
+    @observable transactions: TransactionModel[] = [];
     @observable fromBlock: number;
     @observable notifications: number = 0;
     @observable address: string;
@@ -79,8 +76,8 @@ class Store {
     @observable loading: boolean;
 
     color: number;
-    token: Contract;
-    tcs: Array<Contract> = [];
+    token?: Contract;
+    tcs?: Array<Contract> = [];
 
     // ToDo: pass privKey only. Address can be derrived from private key
     constructor({ address, key, token, tcs, color }:
@@ -143,24 +140,27 @@ class Store {
     }
 
     @action
-    getBalance = async (address) => {
+    getBalance = async (address: string) => {
         try {
-            const balance = await this.token.methods.balanceOf(address).call();
-            this.balance = Number(balance);
+            if (this.token) {
+                const balance = await this.token.methods.balanceOf(address).call();
+                this.balance = Number(balance);
+            }
         } catch (err) {
             console.error(err.message);
         }
     }
 
     @action
-    getBalances = async (address) => {
+    getBalances = async (address: string) => {
         try {
+            if (this.tcs) {
+                const balances = await Promise.all(this.tcs.map( (tc) => {
+                    return tc.methods.balanceOf(address).call();
+                } ));
 
-            const balances = await Promise.all(this.tcs.map( (tc) => {
-                return tc.methods.balanceOf(address).call();
-            } ));
-
-            this.balances = balances.map(b => Number(b));
+                this.balances = balances.map(b => Number(b));
+            }
         } catch (err) {
             console.error(err.message);
         }

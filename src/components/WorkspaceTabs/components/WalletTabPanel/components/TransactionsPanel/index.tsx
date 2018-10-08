@@ -1,6 +1,8 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { Tx } from "parsec-lib";
+import { Transaction, TransactionReceipt } from "web3/types";
+import {} from "../../../../../../store/";
 
 import "./style.scss";
 
@@ -13,9 +15,10 @@ import { TokensContext } from "../../../../../../contexts";
 
 import { TRANSACTIONS_PAGE_SIZE } from "../../../../../../config";
 import { fromCents } from "../../../../../../utils";
+import { Token } from "src/components/WorkspaceTabs/components/WalletTabPanel/types";
 
-const getStatus = (original) => {
-    switch (original.status) {
+const getStatus = (original: TransactionReceipt) => {
+    switch (original.status as any) {
         case true:
         case "0x1":
             return "success";
@@ -73,18 +76,18 @@ const PendingTr = () => (
     </tr>
 );
 
-const getName = (addresses, address) => {
+const getName = (addresses: {[key: string]: string}, address: string) => {
     const id = addresses[address && address.toLowerCase()];
     if (id) {
-        return names[id];
+        return (names as any)[id];
     }
 
     return address;
 };
 
-const getFee = (tx, token) => (
+const getFee = (tx: Transaction, token: Token) => (
     tx.gasPrice &&
-    fromCents(tx.gasPrice * tx.gas, token.decimals) ||
+    fromCents(Number(tx.gasPrice) * tx.gas, token.decimals) ||
     null
 );
 
@@ -125,13 +128,17 @@ const TxTr = observer(({ tx, addresses }) => {
     );
 });
 
+interface TransactionsPanelState {
+    page: number;
+}
+
 @observer
-class TransactionsPanel extends React.Component<any> {
+class TransactionsPanel extends React.Component<any, TransactionsPanelState> {
     state = {
         page: 0
     };
 
-    handlePageChange = (page) => {
+    handlePageChange = (page: { selected: number }) => {
         this.setState({
             page: page.selected
         });
@@ -159,7 +166,7 @@ class TransactionsPanel extends React.Component<any> {
                         {
                             transactions.length > 0 ?
                                 transactions
-                                    .sort((tx1, tx2) => {
+                                    .sort((tx1: TransactionReceipt, tx2: TransactionReceipt) => {
                                         const tx1v1 = getStatus(tx1) !== "pending" ? 1 : 0;
                                         const tx2v1 = getStatus(tx2) !== "pending" ? 1 : 0;
                                         const tx1v2 = -tx1.blockNumber;
@@ -170,7 +177,7 @@ class TransactionsPanel extends React.Component<any> {
                                         page * TRANSACTIONS_PAGE_SIZE,
                                         page * TRANSACTIONS_PAGE_SIZE + TRANSACTIONS_PAGE_SIZE
                                     )
-                                    .map((tx) => (
+                                    .map((tx: TransactionReceipt) => (
                                         <TxTr tx={tx} key={tx.transactionHash} addresses={addresses} />
                                     )) : loading ? (
                                         <PendingTr />

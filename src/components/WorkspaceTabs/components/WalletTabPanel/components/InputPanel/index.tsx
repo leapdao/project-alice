@@ -2,7 +2,7 @@ import * as React from "react";
 import Select, { OptionComponentProps, OptionValues } from "react-select";
 
 import SendButton from "./components/SendButton";
-import { InputPanelState } from "./types";
+import { InputPanelState, Receiver } from "./types";
 
 import TooltipNotification from "../../../../../common/TooltipNotification";
 import { fromCents, toCents } from "../../../../../../utils";
@@ -32,11 +32,13 @@ const notificationStyle = {
     width: "18em"
 };
 
-class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
-    handleMouseDown = (event) => {
+class Option extends React.PureComponent<OptionComponentProps<Receiver>> {
+    handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        this.props.onSelect(this.props.option, event);
+        if (this.props.onSelect) {
+            this.props.onSelect(this.props.option, event);
+        }
     }
 
     render() {
@@ -55,7 +57,6 @@ class Option extends React.PureComponent<OptionComponentProps<OptionValues>> {
 class InputPanel extends React.PureComponent<any, InputPanelState> {
     state: InputPanelState = {
         receiver: null,
-        amount: undefined,
         sending: false,
         sent: false,
         hiddenNotification: false
@@ -63,18 +64,15 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
 
     timeout: NodeJS.Timer;
 
-    handleSelectAddress = (receiver) => {
-        event.preventDefault();
-        event.stopPropagation();
-
+    handleSelectAddress = (receiver: Receiver) => {
         this.setState({ receiver });
     }
 
-    valueRenderer = (receiver) => (
+    valueRenderer = (receiver: Receiver) => (
         <span>Send to address: <strong>{receiver.name}</strong></span>
     )
 
-    arrowRenderer = ({ isOpen }) => (
+    arrowRenderer = ({ isOpen }: { isOpen: boolean }) => (
         <img
             className={`alice-input-panel_address-dropdown${isOpen ? " opened" : ""}`}
             src={isOpen ? dropdownWhite : dropdown}
@@ -112,13 +110,13 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     }
 
     handleSendTransaction = async () => {
-        const { amount } = this.state;
+        const { amount, receiver } = this.state;
         const { balance, selectedToken } = this.props;
-        if (amount && this.state.receiver) {
+        if (amount && receiver) {
             this.setState({ sending: true });
             try {
                 await this.props.onSend(
-                    this.state.receiver.account,
+                    receiver.account,
                     Math.min(
                         toCents(amount, selectedToken.decimals),
                         balance
@@ -129,7 +127,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                     sent: true,
                     hiddenNotification: false,
                     notificationText:
-                        `${this.state.amount} ${selectedToken.symbol} successfully sent to ${this.state.receiver.name}`
+                        `${this.state.amount} ${selectedToken.symbol} successfully sent to ${receiver.name}`
                 }), () => {
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(() => {
@@ -152,6 +150,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
     }
 
     render() {
+        const { receiver } = this.state;
         return (
             <div className="alice-input-panel">
                 <div className="alice-input-panel_address">
@@ -163,7 +162,7 @@ class InputPanel extends React.PureComponent<any, InputPanelState> {
                         placeholder="Select address"
                         searchable={false}
                         multi={false}
-                        value={this.state.receiver}
+                        value={receiver as any}
                         valueRenderer={this.valueRenderer}
                         valueKey="account"
                         labelKey="name"

@@ -3,12 +3,14 @@ export interface InputPanelProps {
     onSend: Function;
 }
 
+export interface Receiver {
+    name: String;
+    account: String;
+}
+
 export interface InputPanelState {
-    amount: string | number | "";
-    receiver: null | {
-        name: String;
-        account: String;
-    };
+    amount?: string | number | "";
+    receiver: null | Receiver;
     sending: boolean;
     sent: boolean;
     hiddenNotification?: boolean;

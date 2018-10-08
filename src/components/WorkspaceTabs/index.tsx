@@ -7,6 +7,8 @@ import { createWalletTabPanel } from "./components/WalletTabPanel";
 import HelpTabPanel from "./components/HelpTabPanel";
 import PulsaitingDot from "./components/PulsaitingDot";
 
+import Store from "../../store";
+
 const alice = require("./img/alice.svg");
 const bob = require("./img/bob.svg");
 const charlie = require("./img/charlie.svg");
@@ -16,28 +18,40 @@ const AliceWalletTabPanel = createWalletTabPanel("alice");
 const BobWalletTabPanel = createWalletTabPanel("bob");
 const CharlieWalletTabPanel = createWalletTabPanel("charlie");
 
-class WalletTab extends React.Component<any> {
+interface WalletTabProps {
+    active: boolean;
+    store?: Store;
+    icon: string;
+    name: string;
+}
+
+interface WalletTabState {
+   notifications: number;
+   pulsar: boolean;
+}
+
+class WalletTab extends React.Component<WalletTabProps, WalletTabState> {
     state = {
         pulsar: false,
         notifications: 0
     };
 
-    static getDerivedStateFromProps = (props, state) => {
+    static getDerivedStateFromProps = (props: WalletTabProps, state: WalletTabState) => {
         if (
             state.pulsar === true &&
-            props.active === true
+            props.active === true &&
+            props.store
         ) {
             state.pulsar = false;
             state.notifications = props.store.notifications;
 
         } else if (
             props.active === false &&
+            props.store &&
             props.store.notifications !== state.notifications
         ) {
             state.pulsar = true;
-        } else if (
-            props.active === true
-        ) {
+        } else if (props.active === true && props.store) {
             state.notifications = props.store.notifications;
         }
 
@@ -45,12 +59,13 @@ class WalletTab extends React.Component<any> {
     }
 
     render() {
+        const { icon, name, store } = this.props;
         return (
             <div className="tab">
-                <img className="react-tabs__tab-icon" src={this.props.icon} />
-                <span className="react-tabs__tab-label">{this.props.name}</span>
+                <img className="react-tabs__tab-icon" src={icon} />
+                <span className="react-tabs__tab-label">{name}</span>
                 {this.state.pulsar ? <PulsaitingDot/> : null}
-                <input type="hidden" value={this.props.store.notifications}/>
+                <input type="hidden" value={store ? store.notifications : 0}/>
             </div>
         );
     }
@@ -60,15 +75,17 @@ const AliceWalletTab = inject((store: any) => ({ store: store.alice }))(observer
 const BobWalletTab = inject((store: any) => ({ store: store.bob }))(observer(WalletTab));
 const CharlieWalletTab = inject((store: any) => ({ store: store.charlie }))(observer(WalletTab));
 
-class WorkspaceTabs extends React.Component<WorkspaceTabsProps> {
+interface WorkspaceTabsState {
+    active: number;
+}
+
+class WorkspaceTabs extends React.Component<any, WorkspaceTabsState> {
     state = {
         active: 0
     };
 
-    handleSelect = (active) => {
-        this.setState((state) => ({
-            active
-        }));
+    handleSelect = (active: number) => {
+        this.setState({ active });
     }
 
     render() {

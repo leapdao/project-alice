@@ -13,10 +13,9 @@ const copy = require("./img/copy.svg");
 const copyWhite = require("./img/copy-white.svg");
 
 import SelectToken from "./components/SelectToken";
-
 import TooltipNotification from "../../../../../common/TooltipNotification";
-
 import { TokensContext } from "../../../../../../contexts";
+import { Token } from "../../types";
 
 import "./style.scss";
 import { observer } from "mobx-react";
@@ -109,9 +108,9 @@ class BalancePanel extends React.Component<any> {
             });
     }
 
-    filterBalance = (token): any => ({
+    filterBalance = (token: Token): any => ({
         ...token,
-        balance: token.balances[addresses[this.props.address]]
+        balance: token.balances && token.balances[(addresses as any)[this.props.address]]
     })
 
     render() {
