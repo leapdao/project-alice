@@ -42,7 +42,7 @@ const readBlocksInBatch = (
 const getBlocksRange = memoize(
   (fromBlock: number, toBlock: number): Promise<Block[]> => {
     if (false) {
-      // parsec node doesn't support batches
+      // leap node doesn't support batches
       const web3 = getWeb3();
       return Promise.all(
         range(fromBlock, toBlock + 1).map(i => web3.eth.getBlock(i, true))

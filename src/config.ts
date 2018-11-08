@@ -12,7 +12,7 @@ export const CHARLIE_PUBLIC_ADDRESS =
 export const CHARLIE_PRIVATE_KEY =
   '0x22f9b4ac8ced2b5938857decef2d546f7690ea91bbf52a66d8b5d82f4902e41b';
 export const GENESIS_BLOCK = 0;
-export const WEB3_PROVIDER_PLASMA = 'https://testnet-1.parseclabs.org';
+export const WEB3_PROVIDER_PLASMA = 'https://testnet-1.leapdao.org';
 export const WEB3_PROVIDER_ROOT = 'https://rinkeby.infura.io';
 export const PROVIDER_ETHERSCAN_BASE = 'http://rinkeby.etherscan.io' as string;
 export const TRANSACTIONS_PAGE_SIZE = 15;

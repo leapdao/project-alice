@@ -1,56 +1,56 @@
 header {
-    nav {
-        margin-left: auto;
+  nav {
+    ul {
+      display: flex;
 
-        ul {
-            li {
-                float: left;
-                font-weight: bold;
-                text-transform: uppercase;
-                list-style: none;
-                margin: 0 0.7em;
+      li {
+        font-weight: bold;
+        text-transform: uppercase;
+        list-style: none;
+        margin: 0 0.7em;
 
-                a {
-                    color: #FFF;
-                    text-decoration: none;
-                    font-size: 1.3em;
-                    line-height: 1.5em;
-                
-                    &:hover {
-                        -webkit-background-clip: text;
-                        background-clip: text;
-                        -webkit-text-fill-color: transparent;
-                        background-image: linear-gradient(to right, #4facfe, #00f2fe), linear-gradient(#ffffff, #ffffff);
-                    }
+        a {
+          color: #fff;
+          text-decoration: none;
+          font-size: 1.3em;
+          line-height: 1.5em;
 
-                    &:active{
-                        color: #FFFFFF;
-                        -webkit-text-fill-color: initial;
-                    }
-                }
+          &:hover {
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #4facfe, #00f2fe),
+              linear-gradient(#ffffff, #ffffff);
+          }
 
-                &.nav-social{
-                    &:hover{
-                        .nav-social-icon{
-                            display: none;
-
-                            &-white{
-                                width: 1.5em;
-                                display: initial;
-                            }
-                        }
-                    }
-
-                    .nav-social-icon{
-                        width: 1.5em;
-
-                        &-white{
-                            width: 1.5em;
-                            display: none;
-                        }
-                    }
-                }
-            }
+          &:active {
+            color: #ffffff;
+            -webkit-text-fill-color: initial;
+          }
         }
+
+        &.nav-social {
+          &:hover {
+            .nav-social-icon {
+              display: none;
+
+              &-white {
+                width: 1.5em;
+                display: initial;
+              }
+            }
+          }
+
+          .nav-social-icon {
+            width: 1.5em;
+
+            &-white {
+              width: 1.5em;
+              display: none;
+            }
+          }
+        }
+      }
     }
+  }
 }

@@ -46,11 +46,11 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "22.4.2",
+    "leap-core": "^0.19.0",
     "mem": "^3.0.1",
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.3",
     "object-assign": "4.1.1",
-    "parsec-lib": "0.16.5",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
     "promise": "8.0.1",
@@ -90,7 +90,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "deploy": "aws s3 sync ./build s3://alice.parseclabs.org/ --acl public-read"
+    "deploy": "aws s3 sync ./build s3://alice.leapdao.org/ --acl public-read && aws cloudfront create-invalidation --distribution-id E3F2ZYYPTNKNUS --paths '/*'"
   },
   "jest": {
     "collectCoverageFrom": [

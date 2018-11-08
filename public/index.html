@@ -1,12 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>PARSEC Labs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <meta charset="utf-8" />
+    <title>Alice | Leap DAO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
@@ -19,13 +19,17 @@
     -->
     <title>React App</title>
     <script>
-      function testWebP () {
-        const canvas = typeof document === 'object' ?
-        document.createElement('canvas') : {};
+      function testWebP() {
+        const canvas =
+          typeof document === 'object' ? document.createElement('canvas') : {};
         canvas.width = canvas.height = 1;
-        return canvas.toDataURL ? canvas.toDataURL('image/webp').indexOf('image/webp') === 5 : false;
+        return canvas.toDataURL
+          ? canvas.toDataURL('image/webp').indexOf('image/webp') === 5
+          : false;
       }
-      document.children[0].style.backgroundImage = testWebP() ? 'url("/img/bg.webp")' : 'url("/img/bg.jpg")';
+      document.children[0].style.backgroundImage = testWebP()
+        ? 'url("/img/bg.webp")'
+        : 'url("/img/bg.jpg")';
     </script>
     <style>
       html {

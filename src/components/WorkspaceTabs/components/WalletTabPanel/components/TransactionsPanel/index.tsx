@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Tx } from 'parsec-lib';
+import { Tx } from 'leap-core';
 import { Transaction, TransactionReceipt } from 'web3/types';
-import {} from '../../../../../../store/';
 
 import './style.scss';
 
@@ -102,7 +101,7 @@ const TxTr = observer(({ tx, addresses }) => {
             <tr className={`tx-tr ${getStatus(tx)}`}>
               <td className="tx-td tx-td_hash">
                 <a
-                  href={`https://stake-dev.parseclabs.org/explorer/${
+                  href={`https://bridge-dev.leapdao.org/explorer/${
                     tx.transactionHash
                   }`}
                   target="blank"

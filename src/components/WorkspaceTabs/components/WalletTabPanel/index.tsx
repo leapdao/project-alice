@@ -1,15 +1,7 @@
 import * as React from 'react';
 import { observer, inject } from 'mobx-react';
-import { Tx, helpers, Output } from 'parsec-lib';
+import { Tx, helpers, Output } from 'leap-core';
 
-import {
-  ALICE_PUBLIC_ADDRESS,
-  ALICE_PRIVATE_KEY,
-  BOB_PUBLIC_ADDRESS,
-  BOB_PRIVATE_KEY,
-  CHARLIE_PUBLIC_ADDRESS,
-  CHARLIE_PRIVATE_KEY,
-} from './../../../../config';
 import getWeb3 from '../../../../getWeb3';
 
 import './style.scss';

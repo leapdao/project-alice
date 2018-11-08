@@ -6,7 +6,7 @@ import './style.scss';
 const HelpTabPanel = () => (
   <div className="help-tab-panel">
     <p>
-      Welcome to Project Alice! It’s a small showcase of PARSEC chain
+      Welcome to Project Alice! It’s a small showcase of Leap DAO chain
       capabilities. The main purpose of this page is to show you how
       transactions are working in our chain.
     </p>
@@ -18,8 +18,6 @@ const HelpTabPanel = () => (
     </p>
 
     <p>Try it! Send some transactions! : )</p>
-
-    <p>PARSEC Labs</p>
   </div>
 );
 
